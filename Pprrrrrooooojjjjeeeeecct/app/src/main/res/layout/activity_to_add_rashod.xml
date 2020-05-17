@@ -8,26 +8,14 @@
     tools:context="com.example.proecticus.ActivityToAddRashod">
 
     <Button
-        android:id="@+id/add"
+        android:id="@+id/addRashod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="51dp"
-        android:layout_marginLeft="51dp"
-        android:text="Add"
+        android:layout_marginTop="34dp"
         android:onClick="Click_AddBtn"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button2"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="58dp"
-        android:layout_marginRight="58dp"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Добавить"
+        app:layout_constraintStart_toStartOf="@+id/rashodi"
+        app:layout_constraintTop_toBottomOf="@+id/rashodi" />
 
     <EditText
         android:id="@+id/rashodi"
@@ -35,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="37dp"
         android:ems="10"
-        android:hint="add your rashodi"
+        android:hint="добавьте ваши расходы"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,8 +45,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="29dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginEnd="49dp"
+        android:layout_marginRight="49dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
