@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,14 +25,16 @@ public class ActivityToAddRashod extends AppCompatActivity {
     public void Click_AddBtn(View v)
     {
         rashodToAdd = findViewById(R.id.rashodi);
+        
+        View view = getLayoutInflater().inflate(R.layout.activity_main, null);
+        TextView potratil = view.findViewById(R.id.Potratil);
+        TextView allMoney = view.findViewById(R.id.allMoney);
         int rashod = Integer.parseInt(rashodToAdd.getText().toString());
-        potratil = findViewById(R.id.Potratil);
         int allPotratil = Integer.parseInt(potratil.getText().toString());
-        allMoney = findViewById(R.id.allMoney);
         int allMon = Integer.parseInt(allMoney.getText().toString());
         int newAllPotratil = allPotratil + rashod;
-        potratil.setText(Integer.toString(newAllPotratil));
         int newAllMoney = allMon - rashod;
+        potratil.setText(Integer.toString(newAllPotratil));
         allMoney.setText(Integer.toString(newAllMoney));
     }
 }
