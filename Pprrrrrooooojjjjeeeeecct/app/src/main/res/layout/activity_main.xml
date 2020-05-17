@@ -13,8 +13,8 @@
         android:layout_width="361dp"
         android:layout_height="161dp"
         android:background="@color/blueColor"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,42 +24,95 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Всего средств:"
-            android:textSize="24sp"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/allMoney"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25sp"
-            android:text="120 Р"
-            android:textColor="#FFFFFF"/>
+            android:text="0 Р"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
 
         <TextView
             android:id="@+id/Date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ВС, 17.05.20"
-            android:textSize="23sp"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            android:textSize="23sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Расходы:"
-            android:textSize="24sp"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/Potratil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100Р"
-            android:textSize="25sp"
+            android:gravity="center"
+            android:text="0Р"
             android:textColor="#FFFFFF"
-            android:gravity="center"/>
+            android:textSize="25sp" />
     </LinearLayout>
 
+    <TableLayout
+        android:layout_width="358dp"
+        android:layout_height="405dp"
+        android:layout_marginTop="162dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0 Р"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="0 Р"
+                android:textSize="18sp"
+                android:layout_marginLeft="80sp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <Button
+                android:id="@+id/products"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/blueColor"
+                android:text="продукты"
+                android:textColor="#FFFFFF"
+                android:onClick="Click_Products"
+                android:textSize="18sp"/>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+
+        </TableRow>
+    </TableLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

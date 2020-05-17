@@ -9,6 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name="com.example.proecticus.ActivityToAddRashod"
+            android:label="ActivityToAddRashod" >
+            <intent-filter>
+                <action android:name="android.intent.action.com.example.proecticus.ActivityToAddRashod" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
