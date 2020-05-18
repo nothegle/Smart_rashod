@@ -100,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/blueColor"
-                android:onClick="Click_Products"
+                android:onClick="сlick_Products"
                 android:text="продукты"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp" />
