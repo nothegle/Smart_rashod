@@ -11,7 +11,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.example.proecticus.ActivityToAddRashod"
-            android:label="ActivityToAddRashod" >
+            android:label="Добавьте ваши расходы"
+            android:theme="@style/Theme.AppCompat.Dialog">
             <intent-filter>
                 <action android:name="android.intent.action.com.example.proecticus.ActivityToAddRashod" />
 

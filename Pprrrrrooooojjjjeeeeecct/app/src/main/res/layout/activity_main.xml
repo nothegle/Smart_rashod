@@ -31,7 +31,8 @@
             android:id="@+id/allMoney"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100000"
+            android:text="0"
+            android:inputType="number"
             android:textColor="#FFFFFF"
             android:textSize="25sp" />
 
@@ -39,7 +40,7 @@
             android:id="@+id/Date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ВС, 17.05.20"
+
             android:textColor="#FFFFFF"
             android:textSize="23sp" />
 
@@ -51,10 +52,11 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/Potratil"
+            android:id="@+id/allExpenses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:inputType="number"
             android:text="0"
             android:textColor="#FFFFFF"
             android:textSize="25sp" />
