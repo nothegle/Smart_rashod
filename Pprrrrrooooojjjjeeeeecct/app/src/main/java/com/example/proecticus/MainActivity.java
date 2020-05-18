@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private Button products;
-    public TextView Date, allMoney, allExpenses;
+    public TextView Date, allMoney, allExpenses, productsExpenses;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         allMoney = findViewById(R.id.allMoney);
         allExpenses = findViewById(R.id.allExpenses);
         products = findViewById(R.id.products);
-
+        productsExpenses = findViewById(R.id.productsExpenses);
     }
 
     public void Click_Products(View v)
@@ -44,12 +44,15 @@ public class MainActivity extends AppCompatActivity {
         }
         String newExpense = data.getStringExtra("rashod");
         int newExp = 0;
-        if(newExpense != "")
+        if(newExpense != null)
             newExp = Integer.parseInt(newExpense);
         int allMon = Integer.parseInt(allMoney.getText().toString());
         int allExp = Integer.parseInt(allExpenses.getText().toString());
+        int prodExp = Integer.parseInt(productsExpenses.getText().toString());
+        int newProdExp = prodExp + newExp;
         int newAllMon = allMon - newExp;
         int newAllExp = allExp + newExp;
+        productsExpenses.setText(Integer.toString(newProdExp));
         allMoney.setText(Integer.toString(newAllMon));
         allExpenses.setText(Integer.toString(newAllExp));
 
