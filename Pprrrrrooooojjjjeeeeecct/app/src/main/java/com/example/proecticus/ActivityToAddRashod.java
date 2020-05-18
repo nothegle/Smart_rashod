@@ -29,16 +29,5 @@ public class ActivityToAddRashod extends AppCompatActivity {
         newExpense.putExtra("rashod", rashodToAdd.getText().toString());
         setResult(RESULT_OK, newExpense);
         finish();
-
-        //View view = getLayoutInflater().inflate(R.layout.activity_main, null);
-        //TextView potratil = view.findViewById(R.id.Potratil);
-        //TextView allMoney = view.findViewById(R.id.allMoney);
-
-        //int allPotratil = Integer.parseInt(potratil.getText().toString());
-        //int allMon = Integer.parseInt(allMoney.getText().toString());
-        //int newAllPotratil = allPotratil + rashod;
-        //int newAllMoney = allMon - rashod;
-       // potratil.setText(Integer.toString(newAllPotratil));
-       // allMoney.setText(Integer.toString(newAllMoney));
     }
 }
