@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat
 
 class MainActivity : AppCompatActivity() {
     private var products: Button? = null
-    //var date: TextView? = null
     var allMoney: TextView? = null
     var allExpenses: TextView? = null
     var productsExpenses: TextView? = null
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //date = findViewById(R.id.Date)
         val sdf = SimpleDateFormat("dd:MM:yy")
         val time = sdf.format(java.util.Date(System.currentTimeMillis()))
         Date.text = time
