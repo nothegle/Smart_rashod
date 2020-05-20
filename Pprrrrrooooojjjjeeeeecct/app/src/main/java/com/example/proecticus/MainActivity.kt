@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 
@@ -32,6 +34,11 @@ class MainActivity : AppCompatActivity() {
         products = findViewById(R.id.products)
         productsExpenses = findViewById(R.id.productsExpenses)
         loadData()
+        //recyclerView
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val adapter = ExpensesListAdapter(this)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     fun сlick_Products(v: View?) {
