@@ -7,19 +7,22 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_to_add_expense.*
 
-class ActivityToAddRashod : AppCompatActivity() {
-    var rashodToAdd: EditText? = null
+class ActivityToAddExpense : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_to_add_rashod)
-        rashodToAdd = findViewById(R.id.rashodi)
+        setContentView(R.layout.activity_to_add_expense)
+        expenseItem.text = getIntent().getStringExtra("expenseItemText")
     }
 
     @SuppressLint("SetTextI18n")
     fun Click_AddBtn(v: View?) {
         val newExpense = Intent()
-        newExpense.putExtra("rashod", rashodToAdd!!.text.toString())
+        newExpense.putExtra("rashod", expenseInt!!.text.toString())
+        newExpense.putExtra("expenseItem", expenseItem.text)
         setResult(Activity.RESULT_OK, newExpense)
         finish()
     }

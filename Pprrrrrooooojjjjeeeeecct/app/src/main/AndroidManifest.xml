@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.example.proecticus.ActivityToAddRashod"
+            android:name="com.example.proecticus.ActivityToAddExpense"
             android:label="Добавьте ваши расходы"
             android:theme="@style/Theme.AppCompat.Dialog">
             <intent-filter>

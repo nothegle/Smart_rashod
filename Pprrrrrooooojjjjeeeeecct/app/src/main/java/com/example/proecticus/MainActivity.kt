@@ -6,33 +6,30 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    private var products: Button? = null
-    var allMoney: TextView? = null
-    var allExpenses: TextView? = null
-    var productsExpenses: TextView? = null
     var sPref: SharedPreferences? = null
     val ALLMONEY = "ALLMONEY"
     val ALLEXPENCSES = "ALLEXPENCSES"
+
+    companion object{
+        const val ADD_REQUEST_CODE = 1
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val sdf = SimpleDateFormat("dd:MM:yy")
-        val time = sdf.format(java.util.Date(System.currentTimeMillis()))
+        val time = sdf.format(Date(System.currentTimeMillis()))
         Date.text = time
-        allMoney = findViewById(R.id.allMoney)
-        allExpenses = findViewById(R.id.allExpenses)
-        products = findViewById(R.id.products)
-        productsExpenses = findViewById(R.id.productsExpenses)
         loadData()
         //recyclerView
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
@@ -41,11 +38,12 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    fun сlick_Products(v: View?) {
-        val intent = Intent(this, ActivityToAddRashod::class.java)
-        startActivityForResult(intent, 1)
+    fun expensesOnClickListener(v: View?) {
+        startActivityIntent(v)
     }
 
+
+//Выполняется при закрытии активити с добалением расходов. Здесь данные должны отправляться в бд
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (data == null) {
@@ -56,14 +54,34 @@ class MainActivity : AppCompatActivity() {
         if (newExpense != null) newExp = newExpense.toInt()
         val allMon = allMoney!!.text.toString().toInt()
         val allExp = allExpenses!!.text.toString().toInt()
-        val prodExp = productsExpenses!!.text.toString().toInt()
-        val newProdExp = prodExp + newExp
         val newAllMon = allMon - newExp
         val newAllExp = allExp + newExp
-        productsExpenses!!.text = Integer.toString(newProdExp)
-        allMoney!!.text = Integer.toString(newAllMon)
-        allExpenses!!.text = Integer.toString(newAllExp)
+        allMoney!!.text = newAllMon.toString()
+        allExpenses!!.text = newAllExp.toString()
+        var transactionID = generateTransactionID()
+
+        when(data.getStringExtra("expenseItem")){
+
+            "продукты" -> addProductsExpense(newExp)
+            "транспорт" -> addTransportExpense(newExp)
+
+        }
+
     }
+
+    private fun addTransportExpense(newExp: Int){
+        var transExp = transportExpenses.text.toString().toInt()
+        var newTransExp = transExp + newExp
+        transportExpenses.text = newTransExp.toString()
+    }
+
+    private fun addProductsExpense(newExp : Int){
+        var prodExp = productsExpenses.text.toString().toInt()
+        var newProdExp = prodExp + newExp
+        productsExpenses.text = newProdExp.toString()
+    }
+
+    private fun generateTransactionID() : String = UUID.randomUUID().toString()
 
     private fun saveData() {
         sPref = getPreferences(Context.MODE_PRIVATE)
@@ -84,5 +102,13 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         saveData()
+    }
+
+    private fun startActivityIntent(v: View?) {
+        var intent = Intent(this, ActivityToAddExpense::class.java)
+        if (v !is Button) return
+        var expenseItemText = v.text
+        intent.putExtra("expenseItemText", expenseItemText)
+        startActivityForResult(intent, ADD_REQUEST_CODE)
     }
 }

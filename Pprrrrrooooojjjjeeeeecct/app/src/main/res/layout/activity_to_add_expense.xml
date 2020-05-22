@@ -5,20 +5,20 @@
     android:id="@+id/deltaMoney"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.proecticus.ActivityToAddRashod">
+    tools:context="com.example.proecticus.ActivityToAddExpense">
 
     <Button
-        android:id="@+id/addRashod"
+        android:id="@+id/addExpense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="34dp"
         android:onClick="Click_AddBtn"
         android:text="Добавить"
-        app:layout_constraintStart_toStartOf="@+id/rashodi"
-        app:layout_constraintTop_toBottomOf="@+id/rashodi" />
+        app:layout_constraintStart_toStartOf="@+id/expenseInt"
+        app:layout_constraintTop_toBottomOf="@+id/expenseInt" />
 
     <EditText
-        android:id="@+id/rashodi"
+        android:id="@+id/expenseInt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="37dp"
@@ -27,7 +27,7 @@
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/expenseItem" />
 
     <TextView
         android:id="@+id/textView2"
@@ -41,13 +41,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/expenseItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="29dp"
         android:layout_marginEnd="49dp"
         android:layout_marginRight="49dp"
-        android:text="TextView"
+        android:textColor="@color/blueColor"
+        android:textSize="20sp"
+        tools:text="expenseItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

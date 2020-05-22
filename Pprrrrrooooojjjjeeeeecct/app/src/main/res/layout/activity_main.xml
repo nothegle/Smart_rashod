@@ -89,6 +89,7 @@
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/transportExpenses"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="80sp"
@@ -105,10 +106,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/blueColor"
-                android:onClick="сlick_Products"
+                android:onClick="expensesOnClickListener"
                 android:text="продукты"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/transport"
+                android:onClick="expensesOnClickListener"
+                android:background="@color/blueColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:layout_marginLeft="30sp"
+                android:text="транспорт" />
 
         </TableRow>
 
