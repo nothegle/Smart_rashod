@@ -10,12 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_ITEM_EXTRA
 import com.example.proecticus.ActivityToAddExpense.Companion.SUM_OF_EXPENSE_EXTRA
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
@@ -42,40 +39,17 @@ class MainActivity : AppCompatActivity() {
         val adapter = ExpensesListAdapter(applicationContext)
         recycler_view.adapter = adapter
 
+        loadExpensesDataFromSharedPrefs()
+
         mainActViewModel = ViewModelProvider(this).get(MainActViewModel::class.java)
 
         mainActViewModel.allExpensesInDB.observe(this, Observer { exp ->
             exp?.let {
                 adapter.setExpenses(it)
-                expensesList = it
+                updateExpensesTexts(it)
             }
         })
-
-        mainActViewModel.viewModelScope.launch {
-
-            recycler_view.layoutManager = LinearLayoutManager(applicationContext)
-
-            val time = SimpleDateFormat("dd:MM:yy").format(Date(System.currentTimeMillis()))
-            date_tv.text = time
-
-            loadData()
-
-            //берем из бд все расходы за текущий день по категориям
-            if (expensesList.isEmpty().not()) {
-
-                var listOfExpByDay = makeListOfExpensesByDay()
-                val listOfProductsExp = expensesList.filter { x -> x.expCategory == "продукты" }
-                val listOfTransportExp = expensesList.filter { x -> x.expCategory == "транспорт" }
-                val sumOfProductsExp = listOfProductsExp.sumBy { x -> x.sum }
-                val sumOfTransportExp = listOfTransportExp.sumBy { x -> x.sum }
-
-                productsExpenses.text = sumOfProductsExp.toString()//textView
-                transportExpenses.text = sumOfTransportExp.toString()//textView
-            }
-        }
     }
-
-    var expensesList: List<Expense> = emptyList()
 
     private fun makeListOfExpensesByDay(): LiveData<List<Expense>> {
         return mainActViewModel.allExpensesInDB
@@ -121,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun addTransportExpense(newExp: Int) = when (transportExpenses.text) {
 
-        "null" -> transportExpenses.text = newExp.toString()
+        "0" -> transportExpenses.text = newExp.toString()
 
         else -> {
             val transExp = transportExpenses.text.toString().toInt()
@@ -132,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun addProductsExpense(newExp: Int) = when (transportExpenses.text) {
 
-        "null" -> transportExpenses.text = newExp.toString()
+        "0" -> transportExpenses.text = newExp.toString()
 
         else -> {
             val prodExp = productsExpenses.text.toString().toInt()
@@ -143,25 +117,44 @@ class MainActivity : AppCompatActivity() {
 
     private fun generateTransactionID(): String = UUID.randomUUID().toString()
 
-    private fun saveData() {
+    private fun saveExpensesDataToSharedPrefs() {
         sPref = getPreferences(Context.MODE_PRIVATE)
         val ed = sPref!!.edit()
-        ed.putString(ALL_MONEY, all_money_tv!!.text.toString())
-        ed.putString(ALL_EXPENSES, all_expenses_tv!!.text.toString())
+        ed.putString(ALL_MONEY, all_money_tv.text.toString())
+        ed.putString(ALL_EXPENSES, all_expenses_tv.text.toString())
         ed.apply()
     }
 
-    private fun loadData() {
+    private fun loadExpensesDataFromSharedPrefs() {
         sPref = getPreferences(Context.MODE_PRIVATE)
         val savedAllMoney = sPref!!.getString(ALL_MONEY, "0")
         val savedAllExpenses = sPref!!.getString(ALL_EXPENSES, "0")
-        all_money_tv!!.text = savedAllMoney
-        all_expenses_tv!!.text = savedAllExpenses
+        all_money_tv.text = savedAllMoney
+        all_expenses_tv.text = savedAllExpenses
+    }
+
+    private fun updateExpensesTexts(expenses: List<Expense>) {
+
+        val time = SimpleDateFormat("dd.MM.yy").format(Date(System.currentTimeMillis()))
+        date_tv.text = time
+
+        //берем из бд все расходы за текущий день по категориям
+        if (expenses.isEmpty().not()) {
+
+            val listOfProductsExp = expenses.filter { x -> x.expCategory == "продукты" }
+            val listOfTransportExp = expenses.filter { x -> x.expCategory == "транспорт" }
+
+            val sumOfProductsExp = listOfProductsExp.sumBy { x -> x.sum }
+            val sumOfTransportExp = listOfTransportExp.sumBy { x -> x.sum }
+
+            productsExpenses.text = sumOfProductsExp.toString()//textView
+            transportExpenses.text = sumOfTransportExp.toString()//textView
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        saveData()
+        saveExpensesDataToSharedPrefs()
     }
 
     private fun startActivityIntent(btn: Button) {

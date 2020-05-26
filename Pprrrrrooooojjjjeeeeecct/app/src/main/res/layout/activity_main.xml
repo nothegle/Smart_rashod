@@ -122,15 +122,16 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:background="#EEE"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="#EEE"
         android:padding="10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/main_activity_table_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_activity_expenses_info_container"
-        app:layout_constraintBottom_toTopOf="@id/main_activity_table_layout"
         tools:itemCount="3"
         tools:listitem="@layout/recyclerview_item" />
 
