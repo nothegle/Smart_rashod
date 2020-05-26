@@ -12,7 +12,7 @@ import com.example.proecticus.repository.ExpensesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-const val EXPENSES_SHARED_PREFS = "expenses shared prefs"
+const val EXPENSES_SHARED_PREFS = "EXPENSES_SHARED_PREFS"
 
 class MainActViewModel(private val app: Application) : AndroidViewModel(app) {
 
@@ -44,8 +44,8 @@ class MainActViewModel(private val app: Application) : AndroidViewModel(app) {
     fun loadExpensesDataFromSharedPrefs(): ExpensesTextHolder {
 
         val sPref = app.getSharedPreferences(EXPENSES_SHARED_PREFS, Context.MODE_PRIVATE)
-        val savedAllMoney = sPref.getString(ALL_MONEY, "0") ?: "0"
-        val savedAllExpenses = sPref.getString(ALL_EXPENSES, "0") ?: "0"
+        val savedAllMoney = sPref.getString(TOTAL_AMOUNT, "0") ?: "0"
+        val savedAllExpenses = sPref.getString(TOTAL_EXPENSES, "0") ?: "0"
 
         return ExpensesTextHolder(allMoneyText = savedAllMoney, allExpensesText = savedAllExpenses)
     }
@@ -54,8 +54,8 @@ class MainActViewModel(private val app: Application) : AndroidViewModel(app) {
 
         val sPref = app.getSharedPreferences(EXPENSES_SHARED_PREFS, Context.MODE_PRIVATE)
         val ed = sPref!!.edit()
-        ed.putString(ALL_EXPENSES, expensesTexts.allExpensesText)
-        ed.putString(ALL_MONEY, expensesTexts.allMoneyText)
+        ed.putString(TOTAL_EXPENSES, expensesTexts.allExpensesText)
+        ed.putString(TOTAL_AMOUNT, expensesTexts.allMoneyText)
         ed.apply()
     }
 }

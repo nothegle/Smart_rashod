@@ -8,11 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_CATEGORY_EXTRA
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_AMOUNT_EXTRA
+import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_CATEGORY_EXTRA
 import com.example.proecticus.adapter.ExpensesListAdapter
-import com.example.proecticus.data.ExpenseCategory
-import com.example.proecticus.data.ExpenseCategory.*
+import com.example.proecticus.data.ExpenseCategory.PRODUCTS
+import com.example.proecticus.data.ExpenseCategory.TRANSPORT
 import com.example.proecticus.data.ExpensesTextHolder
 import com.example.proecticus.db.Expense
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,8 +20,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
 
-const val ALL_MONEY = "ALL_MONEY"
-const val ALL_EXPENSES = "ALL_EXPENSES"
+const val TOTAL_AMOUNT = "TOTAL_AMOUNT"
+const val TOTAL_EXPENSES = "TOTAL_EXPENSES"
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val ADD_REQUEST_CODE = 1
-        const val EXPENSE_ITEM_TEXT_EXTRA = "expenseItemText"
+        const val EXPENSE_CATEGORY_TEXT_EXTRA = "EXPENSE_CATEGORY_TEXT_EXTRA"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel = ViewModelProvider(this).get(MainActViewModel::class.java)
 
-        updateExpensesTexts(expensesData = mainViewModel.loadExpensesDataFromSharedPrefs())
+        updateTotalTexts(expensesData = mainViewModel.loadExpensesDataFromSharedPrefs())
 
         mainViewModel.allExpensesInDB.observe(this, Observer { exp ->
             exp?.let {
@@ -95,31 +95,31 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.insert(expense)
     }
 
-    private fun addTransportExpense(newExp: Int) = when (transportExpenses.text) {
+    private fun addTransportExpense(newExp: Int) = when (transport_expenses.text) {
 
-        "0" -> transportExpenses.text = newExp.toString()
+        "0" -> transport_expenses.text = newExp.toString()
 
         else -> {
-            val transExp = transportExpenses.text.toString().toInt()
+            val transExp = transport_expenses.text.toString().toInt()
             val newTransExp = transExp + newExp
-            transportExpenses.text = newTransExp.toString()
+            transport_expenses.text = newTransExp.toString()
         }
     }
 
-    private fun addProductsExpense(newExp: Int) = when (transportExpenses.text) {
+    private fun addProductsExpense(newExp: Int) = when (transport_expenses.text) {
 
-        "0" -> transportExpenses.text = newExp.toString()
+        "0" -> transport_expenses.text = newExp.toString()
 
         else -> {
-            val prodExp = productsExpenses.text.toString().toInt()
+            val prodExp = products_expenses.text.toString().toInt()
             val newProdExp = prodExp + newExp
-            productsExpenses.text = newProdExp.toString()
+            products_expenses.text = newProdExp.toString()
         }
     }
 
     private fun generateTransactionID(): String = UUID.randomUUID().toString()
 
-    private fun updateExpensesTexts(expensesData: ExpensesTextHolder) {
+    private fun updateTotalTexts(expensesData: ExpensesTextHolder) {
 
         total_expenses_tv.text = expensesData.allExpensesText
         total_amount_tv.text = expensesData.allMoneyText
@@ -138,13 +138,13 @@ class MainActivity : AppCompatActivity() {
             val sumOfProductsExp = listOfProductsExp.sumBy { it.sum }
             val sumOfTransportExp = listOfTransportExp.sumBy { it.sum }
 
-            productsExpenses.text = sumOfProductsExp.toString()//textView
-            transportExpenses.text = sumOfTransportExp.toString()//textView
+            products_expenses.text = sumOfProductsExp.toString()//textView
+            transport_expenses.text = sumOfTransportExp.toString()//textView
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
 
         val expensesData = ExpensesTextHolder(
 
@@ -155,11 +155,11 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.saveExpensesDataToSharedPrefs(expensesData)
     }
 
-    private fun startActivityIntent(btn: Button) {
+    private fun startActivityIntent(categoryBtn: Button) {
 
         val intent = Intent(this, ActivityToAddExpense::class.java)
-        val expenseItemText = btn.text
-        intent.putExtra(EXPENSE_ITEM_TEXT_EXTRA, expenseItemText)
+        val expenseCategoryText = categoryBtn.text
+        intent.putExtra(EXPENSE_CATEGORY_TEXT_EXTRA, expenseCategoryText)
         startActivityForResult(intent, ADD_REQUEST_CODE)
     }
 }

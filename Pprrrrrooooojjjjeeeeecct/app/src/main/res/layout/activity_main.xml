@@ -76,7 +76,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/productsExpenses"
+                android:id="@+id/products_expenses"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -84,7 +84,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/transportExpenses"
+                android:id="@+id/transport_expenses"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="80sp"
