@@ -1,4 +1,4 @@
-package com.example.proecticus
+package com.example.proecticus.db
 
 import android.content.Context
 import androidx.room.Database

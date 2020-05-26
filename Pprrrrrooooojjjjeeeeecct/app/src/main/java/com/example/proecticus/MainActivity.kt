@@ -12,6 +12,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_ITEM_EXTRA
 import com.example.proecticus.ActivityToAddExpense.Companion.SUM_OF_EXPENSE_EXTRA
+import com.example.proecticus.adapter.ExpensesListAdapter
+import com.example.proecticus.db.Expense
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.Date

@@ -1,7 +1,8 @@
-package com.example.proecticus
+package com.example.proecticus.repository
 
-import android.provider.SyncStateContract.Helpers.insert
 import androidx.lifecycle.LiveData
+import com.example.proecticus.db.Expense
+import com.example.proecticus.db.ExpensesDao
 
 class ExpensesRepository (private val expensesDao: ExpensesDao) {
 

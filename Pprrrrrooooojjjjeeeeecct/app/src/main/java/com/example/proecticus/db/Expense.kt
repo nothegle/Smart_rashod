@@ -1,4 +1,4 @@
-package com.example.proecticus
+package com.example.proecticus.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
