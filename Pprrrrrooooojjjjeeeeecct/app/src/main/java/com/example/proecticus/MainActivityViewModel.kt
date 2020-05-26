@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.proecticus.data.ExpensesTextHolder
 import com.example.proecticus.db.Expense
 import com.example.proecticus.db.ExpensesRoomDatabase
 import com.example.proecticus.repository.ExpensesRepository

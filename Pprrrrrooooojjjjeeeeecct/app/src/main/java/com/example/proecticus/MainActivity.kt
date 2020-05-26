@@ -8,9 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_ITEM_EXTRA
-import com.example.proecticus.ActivityToAddExpense.Companion.SUM_OF_EXPENSE_EXTRA
+import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_CATEGORY_EXTRA
+import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_AMOUNT_EXTRA
 import com.example.proecticus.adapter.ExpensesListAdapter
+import com.example.proecticus.data.ExpensesTextHolder
 import com.example.proecticus.db.Expense
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
@@ -22,7 +23,7 @@ const val ALL_EXPENSES = "ALL_EXPENSES"
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mainActViewModel: MainActViewModel
+    private lateinit var mainViewModel: MainActViewModel
 
     companion object {
         const val ADD_REQUEST_CODE = 1
@@ -37,11 +38,11 @@ class MainActivity : AppCompatActivity() {
         val adapter = ExpensesListAdapter(applicationContext)
         recycler_view.adapter = adapter
 
-        mainActViewModel = ViewModelProvider(this).get(MainActViewModel::class.java)
+        mainViewModel = ViewModelProvider(this).get(MainActViewModel::class.java)
 
-        updateExpensesTexts(expensesData = mainActViewModel.loadExpensesDataFromSharedPrefs())
+        updateExpensesTexts(expensesData = mainViewModel.loadExpensesDataFromSharedPrefs())
 
-        mainActViewModel.allExpensesInDB.observe(this, Observer { exp ->
+        mainViewModel.allExpensesInDB.observe(this, Observer { exp ->
             exp?.let {
                 adapter.setExpenses(it)
                 updateExpensesTexts(it)
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun makeListOfExpensesByDay(): LiveData<List<Expense>> {
-        return mainActViewModel.allExpensesInDB
+        return mainViewModel.allExpensesInDB
     }
 
     fun expensesOnClickListener(v: View?) {//слушает нажатия на кнопки с расходами
@@ -64,34 +65,32 @@ class MainActivity : AppCompatActivity() {
 
         data ?: return
 
-        val newExpense = data.getStringExtra(SUM_OF_EXPENSE_EXTRA)
-        var newExp = 0
+        val newExpenseAmount = data.getStringExtra(EXPENSE_AMOUNT_EXTRA)?.toInt() ?: 0
 
-        if (newExpense != null) newExp = newExpense.toInt()
+        val currentTotalAmount = total_amount_tv.text.toString().toInt()
+        val currentTotalExpenses = total_expenses_tv.text.toString().toInt()
 
-        val allMon = all_money_tv.text.toString().toInt()
-        val allExp = all_expenses_tv.text.toString().toInt()
+        val newTotalAmount = currentTotalAmount - newExpenseAmount
+        val newTotalExpenses = currentTotalExpenses + newExpenseAmount
 
-        val newAllMon = allMon - newExp
-        val newAllExp = allExp + newExp
+        total_amount_tv.text = newTotalAmount.toString()
+        total_expenses_tv.text = newTotalExpenses.toString()
 
-        all_money_tv.text = newAllMon.toString()
-        all_expenses_tv.text = newAllExp.toString()
-
-        val category: String? = data.getStringExtra(EXPENSE_ITEM_EXTRA)
+        val category: String? = data.getStringExtra(EXPENSE_CATEGORY_EXTRA)
         when (category) {
 
-            "продукты" -> addProductsExpense(newExp)
-            "транспорт" -> addTransportExpense(newExp)
+            "продукты" -> addProductsExpense(newExpenseAmount)
+            "транспорт" -> addTransportExpense(newExpenseAmount)
         }
 
         //взаимодействие с бд
-        val expenseForDataBase = Expense(
+        val expense = Expense(
             transactionId = generateTransactionID(),
             expCategory = category.toString(),
-            date = date_tv.text.toString(), sum = newExp
+            date = date_tv.text.toString(),
+            sum = newExpenseAmount
         )
-        mainActViewModel.insert(expenseForDataBase)
+        mainViewModel.insert(expense)
     }
 
     private fun addTransportExpense(newExp: Int) = when (transportExpenses.text) {
@@ -120,8 +119,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateExpensesTexts(expensesData: ExpensesTextHolder) {
 
-        all_expenses_tv.text = expensesData.allExpensesText
-        all_money_tv.text = expensesData.allMoneyText
+        total_expenses_tv.text = expensesData.allExpensesText
+        total_amount_tv.text = expensesData.allMoneyText
     }
 
     private fun updateExpensesTexts(expenses: List<Expense>) {
@@ -147,11 +146,11 @@ class MainActivity : AppCompatActivity() {
 
         val expensesData = ExpensesTextHolder(
 
-            allExpensesText = all_expenses_tv.text.toString(),
-            allMoneyText = all_money_tv.text.toString()
+            allExpensesText = total_expenses_tv.text.toString(),
+            allMoneyText = total_amount_tv.text.toString()
         )
 
-        mainActViewModel.saveExpensesDataToSharedPrefs(expensesData)
+        mainViewModel.saveExpensesDataToSharedPrefs(expensesData)
     }
 
     private fun startActivityIntent(btn: Button) {
@@ -162,11 +161,3 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, ADD_REQUEST_CODE)
     }
 }
-
-/** Через него сохраняются и подгружаются
- * текстовые поля с помощью Shared Prefs
- */
-data class ExpensesTextHolder(
-    val allExpensesText: String,
-    val allMoneyText: String
-)

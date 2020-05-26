@@ -26,7 +26,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/all_money_tv"
+            android:id="@+id/total_amount_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -51,7 +51,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/all_expenses_tv"
+            android:id="@+id/total_expenses_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"

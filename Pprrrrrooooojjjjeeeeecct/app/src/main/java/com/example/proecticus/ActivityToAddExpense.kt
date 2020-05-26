@@ -12,20 +12,20 @@ class ActivityToAddExpense : AppCompatActivity() {
 
     companion object {
 
-        const val SUM_OF_EXPENSE_EXTRA = "sumOfExpense"
-        const val EXPENSE_ITEM_EXTRA = "expenseItem"
+        const val EXPENSE_AMOUNT_EXTRA = "expense amount"
+        const val EXPENSE_CATEGORY_EXTRA = "expense category"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_to_add_expense)
-        expense_item_tv.text = intent.getStringExtra(EXPENSE_ITEM_TEXT_EXTRA)
+        expense_category_tv.text = intent.getStringExtra(EXPENSE_ITEM_TEXT_EXTRA)
     }
 
     fun onAddBtnClick(v: View?) {
         val newExpense = Intent()
-        newExpense.putExtra(SUM_OF_EXPENSE_EXTRA, add_expense_amount_et.text.toString())
-        newExpense.putExtra(EXPENSE_ITEM_EXTRA, expense_item_tv.text.toString())
+        newExpense.putExtra(EXPENSE_AMOUNT_EXTRA, add_expense_amount_et.text.toString())
+        newExpense.putExtra(EXPENSE_CATEGORY_EXTRA, expense_category_tv.text.toString())
         setResult(Activity.RESULT_OK, newExpense)
         finish()
     }
