@@ -21,7 +21,7 @@ class ActivityToAddExpense : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     fun Click_AddBtn(v: View?) {
         val newExpense = Intent()
-        newExpense.putExtra("rashod", expenseInt!!.text.toString())
+        newExpense.putExtra("sumOfExpense", expenseInt!!.text.toString())
         newExpense.putExtra("expenseItem", expenseItem.text)
         setResult(Activity.RESULT_OK, newExpense)
         finish()

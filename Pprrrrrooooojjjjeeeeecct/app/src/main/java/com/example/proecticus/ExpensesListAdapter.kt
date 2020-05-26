@@ -13,7 +13,7 @@ class ExpensesListAdapter internal constructor(
 
 
         private val inflater: LayoutInflater = LayoutInflater.from(context)
-        private var expenses = emptyList<Expenses>() // Cached copy of words
+        private var expenses = emptyList<Expense>() // Cached copy of words
 
         inner class ExpensesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val expensesItemView: TextView = itemView.findViewById(R.id.textView)
@@ -29,8 +29,8 @@ class ExpensesListAdapter internal constructor(
             holder.expensesItemView.text = current.expCategory
         }
 
-        internal fun setExpenses(expenses: List<Expenses>) {
-            this.expenses = expenses
+        internal fun setExpenses(expens: List<Expense>) {
+            this.expenses = expens
             notifyDataSetChanged()
         }
 
