@@ -8,32 +8,30 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class ExpensesListAdapter internal constructor(
-        context: Context
+    context: Context
 ) : RecyclerView.Adapter<ExpensesListAdapter.ExpensesViewHolder>() {
 
+    private val inflater: LayoutInflater = LayoutInflater.from(context)
+    private var expenses = emptyList<Expense>() // Cached copy of words
 
-        private val inflater: LayoutInflater = LayoutInflater.from(context)
-        private var expenses = emptyList<Expense>() // Cached copy of words
+    inner class ExpensesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val expensesItemView: TextView = itemView.findViewById(R.id.all_amount_tv)
+    }
 
-        inner class ExpensesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val expensesItemView: TextView = itemView.findViewById(R.id.all_amount_tv)
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpensesViewHolder {
+        val itemView = inflater.inflate(R.layout.recyclerview_item, parent, false)
+        return ExpensesViewHolder(itemView)
+    }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpensesViewHolder {
-            val itemView = inflater.inflate(R.layout.recyclerview_item, parent, false)
-            return ExpensesViewHolder(itemView)
-        }
+    override fun onBindViewHolder(holder: ExpensesViewHolder, position: Int) {
+        val current = expenses[position]
+        holder.expensesItemView.text = "${current.expCategory} | ${current.sum} | ${current.date}"
+    }
 
-        override fun onBindViewHolder(holder: ExpensesViewHolder, position: Int) {
-            val current = expenses[position]
-            holder.expensesItemView.text = current.expCategory+ " | " + current.sum + " | " + current.date
-        }
+    fun setExpenses(expens: List<Expense>) {
+        this.expenses = expens
+        notifyDataSetChanged()
+    }
 
-        internal fun setExpenses(expens: List<Expense>) {
-            this.expenses = expens
-            notifyDataSetChanged()
-        }
-
-        override fun getItemCount() = expenses.size
-
+    override fun getItemCount() = expenses.size
 }

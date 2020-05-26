@@ -1,28 +1,22 @@
 package com.example.proecticus
 
 import android.app.Application
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.widget.TextView
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainActViewModel(application: Application) : AndroidViewModel(application){
+class MainActViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: ExpensesRepository
 
     val allExpensesInDB: LiveData<List<Expense>>
 
     init {
-        val expensesDao = ExpensesRoomDatabase.getDatabase(context = application,scope =  viewModelScope).ExpensesDao()
+        val expensesDao = ExpensesRoomDatabase.getDatabase(context = application, scope = viewModelScope).expensesDao()
         repository = ExpensesRepository(expensesDao)
-        allExpensesInDB =repository.allExpensesInDB
+        allExpensesInDB = repository.allExpensesInDB
     }
 
     /**
@@ -32,11 +26,11 @@ class MainActViewModel(application: Application) : AndroidViewModel(application)
         repository.insert(expense)
     }
 
-    suspend fun getExpensesByDay(date : String): LiveData<List<Expense>>{
+    suspend fun getExpensesByDay(date: String): LiveData<List<Expense>> {
         return repository.getExpensesByDay(date)
     }
 
-    suspend fun getAllExpenses(): LiveData<List<Expense>>{
-        return  repository.getAllExpenses()
+    suspend fun getAllExpenses(): LiveData<List<Expense>> {
+        return repository.getAllExpenses()
     }
 }

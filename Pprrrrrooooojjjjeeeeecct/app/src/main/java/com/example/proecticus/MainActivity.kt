@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (data == null) return
+        data ?: return
 
         val newExpense = data.getStringExtra(SUM_OF_EXPENSE_EXTRA)
         var newExp = 0
