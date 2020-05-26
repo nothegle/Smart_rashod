@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_CATEGORY_EXTRA
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_AMOUNT_EXTRA
 import com.example.proecticus.adapter.ExpensesListAdapter
+import com.example.proecticus.data.ExpenseCategory
+import com.example.proecticus.data.ExpenseCategory.*
 import com.example.proecticus.data.ExpensesTextHolder
 import com.example.proecticus.db.Expense
 import kotlinx.android.synthetic.main.activity_main.*
@@ -79,8 +81,8 @@ class MainActivity : AppCompatActivity() {
         val category: String? = data.getStringExtra(EXPENSE_CATEGORY_EXTRA)
         when (category) {
 
-            "продукты" -> addProductsExpense(newExpenseAmount)
-            "транспорт" -> addTransportExpense(newExpenseAmount)
+            PRODUCTS.description -> addProductsExpense(newExpenseAmount)
+            TRANSPORT.description -> addTransportExpense(newExpenseAmount)
         }
 
         //взаимодействие с бд
@@ -130,11 +132,11 @@ class MainActivity : AppCompatActivity() {
         //берем из бд все расходы за текущий день по категориям
         if (expenses.isEmpty().not()) {
 
-            val listOfProductsExp = expenses.filter { x -> x.expCategory == "продукты" }
-            val listOfTransportExp = expenses.filter { x -> x.expCategory == "транспорт" }
+            val listOfProductsExp = expenses.filter { it.expCategory == PRODUCTS.description }
+            val listOfTransportExp = expenses.filter { it.expCategory == TRANSPORT.description }
 
-            val sumOfProductsExp = listOfProductsExp.sumBy { x -> x.sum }
-            val sumOfTransportExp = listOfTransportExp.sumBy { x -> x.sum }
+            val sumOfProductsExp = listOfProductsExp.sumBy { it.sum }
+            val sumOfTransportExp = listOfTransportExp.sumBy { it.sum }
 
             productsExpenses.text = sumOfProductsExp.toString()//textView
             transportExpenses.text = sumOfTransportExp.toString()//textView
