@@ -1,6 +1,5 @@
 package com.example.proecticus
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -11,17 +10,22 @@ import kotlinx.android.synthetic.main.activity_to_add_expense.*
 
 class ActivityToAddExpense : AppCompatActivity() {
 
+    companion object {
+
+        const val SUM_OF_EXPENSE_EXTRA = "sumOfExpense"
+        const val EXPENSE_ITEM_EXTRA = "expenseItem"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_to_add_expense)
-        expenseItem.text = intent.getStringExtra(EXPENSE_ITEM_TEXT_EXTRA)
+        expense_item_tv.text = intent.getStringExtra(EXPENSE_ITEM_TEXT_EXTRA)
     }
 
-    @SuppressLint("SetTextI18n")
     fun onAddBtnClick(v: View?) {
         val newExpense = Intent()
-        newExpense.putExtra("sumOfExpense", expenseInt.text.toString())
-        newExpense.putExtra("expenseItem", expenseItem.text.toString())
+        newExpense.putExtra(SUM_OF_EXPENSE_EXTRA, add_expense_amount_et.text.toString())
+        newExpense.putExtra(EXPENSE_ITEM_EXTRA, expense_item_tv.text.toString())
         setResult(Activity.RESULT_OK, newExpense)
         finish()
     }

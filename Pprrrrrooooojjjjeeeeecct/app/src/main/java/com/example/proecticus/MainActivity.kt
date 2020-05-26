@@ -12,10 +12,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_ITEM_EXTRA
+import com.example.proecticus.ActivityToAddExpense.Companion.SUM_OF_EXPENSE_EXTRA
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.UUID
 
 const val ALL_MONEY = "ALL_MONEY"
 const val ALL_EXPENSES = "ALL_EXPENSES"
@@ -89,8 +92,9 @@ class MainActivity : AppCompatActivity() {
 
         if (data == null) return
 
-        val newExpense = data.getStringExtra("sumOfExpense")
+        val newExpense = data.getStringExtra(SUM_OF_EXPENSE_EXTRA)
         var newExp = 0
+
         if (newExpense != null) newExp = newExpense.toInt()
         val allMon = all_money_tv.text.toString().toInt()
         val allExp = all_expenses_tv.text.toString().toInt()
@@ -100,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         all_expenses_tv.text = newAllExp.toString()
         val transactionID = generateTransactionID()
 
-        val category: String? = data.getStringExtra("expenseItem")
+        val category: String? = data.getStringExtra(EXPENSE_ITEM_EXTRA)
         when (category) {
 
             "продукты" -> addProductsExpense(newExp)

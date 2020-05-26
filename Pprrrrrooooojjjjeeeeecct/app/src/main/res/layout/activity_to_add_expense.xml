@@ -8,17 +8,17 @@
     tools:context="com.example.proecticus.ActivityToAddExpense">
 
     <Button
-        android:id="@+id/addExpense"
+        android:id="@+id/add_expense_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="34dp"
         android:onClick="onAddBtnClick"
         android:text="Добавить"
-        app:layout_constraintStart_toStartOf="@+id/expenseInt"
-        app:layout_constraintTop_toBottomOf="@+id/expenseInt" />
+        app:layout_constraintStart_toStartOf="@+id/add_expense_amount_et"
+        app:layout_constraintTop_toBottomOf="@+id/add_expense_amount_et" />
 
     <EditText
-        android:id="@+id/expenseInt"
+        android:id="@+id/add_expense_amount_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="37dp"
@@ -27,21 +27,10 @@
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/expenseItem" />
+        app:layout_constraintTop_toBottomOf="@+id/expense_item_tv" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="49dp"
-        android:layout_marginLeft="49dp"
-        android:layout_marginTop="26dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/expenseItem"
+        android:id="@+id/expense_item_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="29dp"
