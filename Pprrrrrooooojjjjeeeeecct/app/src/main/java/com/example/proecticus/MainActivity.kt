@@ -70,13 +70,15 @@ class MainActivity : AppCompatActivity() {
         var newExp = 0
 
         if (newExpense != null) newExp = newExpense.toInt()
+
         val allMon = all_money_tv.text.toString().toInt()
         val allExp = all_expenses_tv.text.toString().toInt()
+
         val newAllMon = allMon - newExp
         val newAllExp = allExp + newExp
+
         all_money_tv.text = newAllMon.toString()
         all_expenses_tv.text = newAllExp.toString()
-        val transactionID = generateTransactionID()
 
         val category: String? = data.getStringExtra(EXPENSE_ITEM_EXTRA)
         when (category) {
@@ -84,9 +86,10 @@ class MainActivity : AppCompatActivity() {
             "продукты" -> addProductsExpense(newExp)
             "транспорт" -> addTransportExpense(newExp)
         }
+
         //взаимодействие с бд
         val expenseForDataBase = Expense(
-            transactionId = transactionID,
+            transactionId = generateTransactionID(),
             expCategory = category.toString(),
             date = date_tv.text.toString(), sum = newExp
         )
@@ -135,8 +138,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateExpensesTexts(expenses: List<Expense>) {
 
-        val time = SimpleDateFormat("dd.MM.yy").format(Date(System.currentTimeMillis()))
-        date_tv.text = time
+        date_tv.text = SimpleDateFormat("dd.MM.yy").format(Date(System.currentTimeMillis()))
 
         //берем из бд все расходы за текущий день по категориям
         if (expenses.isEmpty().not()) {
