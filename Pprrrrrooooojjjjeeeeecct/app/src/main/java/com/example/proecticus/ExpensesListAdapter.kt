@@ -16,7 +16,7 @@ class ExpensesListAdapter internal constructor(
         private var expenses = emptyList<Expense>() // Cached copy of words
 
         inner class ExpensesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val expensesItemView: TextView = itemView.findViewById(R.id.textView)
+            val expensesItemView: TextView = itemView.findViewById(R.id.all_amount_tv)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpensesViewHolder {
