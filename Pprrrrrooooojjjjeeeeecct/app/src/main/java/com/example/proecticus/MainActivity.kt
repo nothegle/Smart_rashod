@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 const val ALL_MONEY = "ALL_MONEY"
-const val ALL_EXPENCSES = "ALL_EXPENCSES"
+const val ALL_EXPENSES = "ALL_EXPENSES"
 
 class MainActivity : AppCompatActivity() {
 
@@ -52,10 +52,11 @@ class MainActivity : AppCompatActivity() {
 
             recycler_view.layoutManager = LinearLayoutManager(applicationContext)
 
-            val sdf = SimpleDateFormat("dd:MM:yy")
-            val time = sdf.format(Date(System.currentTimeMillis()))
+            val time = SimpleDateFormat("dd:MM:yy").format(Date(System.currentTimeMillis()))
             date_tv.text = time
+
             loadData()
+
             //берем из бд все расходы за текущий день по категориям
             if (expensesList.isEmpty().not()) {
 
@@ -71,9 +72,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    var expensesList: List<Expense> = emptyList() // PLAN B
+    var expensesList: List<Expense> = emptyList()
 
-    fun makeListOfExpensesByDay(): LiveData<List<Expense>> {
+    private fun makeListOfExpensesByDay(): LiveData<List<Expense>> {
         return mainActViewModel.allExpensesInDB
     }
 
@@ -105,31 +106,33 @@ class MainActivity : AppCompatActivity() {
             "продукты" -> addProductsExpense(newExp)
             "транспорт" -> addTransportExpense(newExp)
         }
-//взаимодействие с бд
+        //взаимодействие с бд
         val expenseForDataBase = Expense(
-            transactionId = transactionID.toString(),
+            transactionId = transactionID,
             expCategory = category.toString(),
             date = date_tv.text.toString(), sum = newExp
         )
         mainActViewModel.insert(expenseForDataBase)
     }
 
-    private fun addTransportExpense(newExp: Int) {
-        if (transportExpenses.text == "null")
-            transportExpenses.text = newExp.toString()
-        else {
-            var transExp = transportExpenses.text.toString().toInt()
-            var newTransExp = transExp + newExp
+    private fun addTransportExpense(newExp: Int) = when (transportExpenses.text) {
+
+        "null" -> transportExpenses.text = newExp.toString()
+
+        else -> {
+            val transExp = transportExpenses.text.toString().toInt()
+            val newTransExp = transExp + newExp
             transportExpenses.text = newTransExp.toString()
         }
     }
 
-    private fun addProductsExpense(newExp: Int) {
-        if (productsExpenses.text == "null")
-            productsExpenses.text = newExp.toString()
-        else {
-            var prodExp = productsExpenses.text.toString().toInt()
-            var newProdExp = prodExp + newExp
+    private fun addProductsExpense(newExp: Int) = when (transportExpenses.text) {
+
+        "null" -> transportExpenses.text = newExp.toString()
+
+        else -> {
+            val prodExp = productsExpenses.text.toString().toInt()
+            val newProdExp = prodExp + newExp
             productsExpenses.text = newProdExp.toString()
         }
     }
@@ -140,14 +143,14 @@ class MainActivity : AppCompatActivity() {
         sPref = getPreferences(Context.MODE_PRIVATE)
         val ed = sPref!!.edit()
         ed.putString(ALL_MONEY, all_money_tv!!.text.toString())
-        ed.putString(ALL_EXPENCSES, all_expenses_tv!!.text.toString())
+        ed.putString(ALL_EXPENSES, all_expenses_tv!!.text.toString())
         ed.apply()
     }
 
     private fun loadData() {
         sPref = getPreferences(Context.MODE_PRIVATE)
         val savedAllMoney = sPref!!.getString(ALL_MONEY, "0")
-        val savedAllExpenses = sPref!!.getString(ALL_EXPENCSES, "0")
+        val savedAllExpenses = sPref!!.getString(ALL_EXPENSES, "0")
         all_money_tv!!.text = savedAllMoney
         all_expenses_tv!!.text = savedAllExpenses
     }
