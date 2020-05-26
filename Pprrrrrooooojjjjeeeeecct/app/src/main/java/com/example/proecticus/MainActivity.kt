@@ -22,12 +22,13 @@ const val ALL_EXPENCSES = "ALL_EXPENCSES"
 
 class MainActivity : AppCompatActivity() {
 
-    var sPref: SharedPreferences? = null
+    private var sPref: SharedPreferences? = null
 
     private lateinit var mainActViewModel: MainActViewModel
 
     companion object {
         const val ADD_REQUEST_CODE = 1
+        const val EXPENSE_ITEM_TEXT_EXTRA = "expenseItemText"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,33 +58,36 @@ class MainActivity : AppCompatActivity() {
             loadData()
             //берем из бд все расходы за текущий день по категориям
             if (expensesList.isEmpty().not()) {
+
                 var listOfExpByDay = makeListOfExpensesByDay()
-                val listOfProductsExp = expensesList.filter { x -> x.expCategory == "продукты" }// null
-                val listOfTransportExp = expensesList.filter { x -> x.expCategory == "транспорт" }// null
-                val sumOfProductsExp = listOfProductsExp?.sumBy { x -> x.sum }
-                val sumOfTransportExp = listOfTransportExp?.sumBy { x -> x.sum }
+                val listOfProductsExp = expensesList.filter { x -> x.expCategory == "продукты" }
+                val listOfTransportExp = expensesList.filter { x -> x.expCategory == "транспорт" }
+                val sumOfProductsExp = listOfProductsExp.sumBy { x -> x.sum }
+                val sumOfTransportExp = listOfTransportExp.sumBy { x -> x.sum }
+
                 productsExpenses.text = sumOfProductsExp.toString()//textView
                 transportExpenses.text = sumOfTransportExp.toString()//textView
             }
         }
     }
 
-    var expensesList: List<Expense> = emptyList<Expense>() // PLAN B
+    var expensesList: List<Expense> = emptyList() // PLAN B
 
-    suspend fun makeListOfExpensesByDay(): LiveData<List<Expense>> {
+    fun makeListOfExpensesByDay(): LiveData<List<Expense>> {
         return mainActViewModel.allExpensesInDB
     }
 
     fun expensesOnClickListener(v: View?) {//слушает нажатия на кнопки с расходами
+        if (v !is Button) return
         startActivityIntent(v)
     }
 
     //Выполняется при закрытии активити с добалением расходов. Здесь данные должны отправляться в бд
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data == null) {
-            return
-        }
+
+        if (data == null) return
+
         val newExpense = data.getStringExtra("sumOfExpense")
         var newExp = 0
         if (newExpense != null) newExp = newExpense.toInt()
@@ -137,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         val ed = sPref!!.edit()
         ed.putString(ALL_MONEY, all_money_tv!!.text.toString())
         ed.putString(ALL_EXPENCSES, all_expenses_tv!!.text.toString())
-        ed.commit()
+        ed.apply()
     }
 
     private fun loadData() {
@@ -153,11 +157,11 @@ class MainActivity : AppCompatActivity() {
         saveData()
     }
 
-    private fun startActivityIntent(v: View?) {
-        var intent = Intent(this, ActivityToAddExpense::class.java)
-        if (v !is Button) return
-        var expenseItemText = v.text
-        intent.putExtra("expenseItemText", expenseItemText)
+    private fun startActivityIntent(btn: Button) {
+
+        val intent = Intent(this, ActivityToAddExpense::class.java)
+        val expenseItemText = btn.text
+        intent.putExtra(EXPENSE_ITEM_TEXT_EXTRA, expenseItemText)
         startActivityForResult(intent, ADD_REQUEST_CODE)
     }
 }

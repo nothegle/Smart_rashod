@@ -14,8 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActViewModel(application: Application) : AndroidViewModel(application){
-    private val repository: ExpensesRepository
 
+    private val repository: ExpensesRepository
 
     val allExpensesInDB: LiveData<List<Expense>>
 

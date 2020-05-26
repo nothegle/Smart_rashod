@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="34dp"
-        android:onClick="Click_AddBtn"
+        android:onClick="onAddBtnClick"
         android:text="Добавить"
         app:layout_constraintStart_toStartOf="@+id/expenseInt"
         app:layout_constraintTop_toBottomOf="@+id/expenseInt" />
