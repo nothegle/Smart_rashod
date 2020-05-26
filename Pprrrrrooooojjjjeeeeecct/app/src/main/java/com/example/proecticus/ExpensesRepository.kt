@@ -7,8 +7,8 @@ class ExpensesRepository (private val expensesDao: ExpensesDao) {
 
     suspend fun getAllExpenses() = expensesDao.getAllExpenses()
 
-    suspend fun getExpensesByDay (exp : Expense): LiveData<List<Expense>> {
-        return expensesDao.getExpensesByDay(exp.date)
+    suspend fun getExpensesByDay (date : String): LiveData<List<Expense>> {
+        return expensesDao.getExpensesByDay(date)
     }
 
     val allExpensesInDB: LiveData<List<Expense>> = expensesDao.getAllExpenses()

@@ -23,8 +23,10 @@ public abstract class ExpensesRoomDatabase : RoomDatabase() {
             INSTANCE?.let{database -> scope.launch { populateDatabase(database.ExpensesDao()) }}
         }
         suspend fun populateDatabase(expensesDao: ExpensesDao){
-            var expense = Expense("1", "ff", "26.05.20", 2)
+            var expense = Expense("0", "продукты", "26.05.20", 0)
+            var expense1 = Expense("1", "транспорт", "26.05.20", 0)
             expensesDao.insert(expense)
+            expensesDao.insert(expense1)
         }
     }
     companion object {

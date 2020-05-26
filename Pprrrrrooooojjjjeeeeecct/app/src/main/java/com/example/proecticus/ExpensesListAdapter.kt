@@ -26,7 +26,7 @@ class ExpensesListAdapter internal constructor(
 
         override fun onBindViewHolder(holder: ExpensesViewHolder, position: Int) {
             val current = expenses[position]
-            holder.expensesItemView.text = current.expCategory
+            holder.expensesItemView.text = current.expCategory+ " | " + current.sum + " | " + current.date
         }
 
         internal fun setExpenses(expens: List<Expense>) {

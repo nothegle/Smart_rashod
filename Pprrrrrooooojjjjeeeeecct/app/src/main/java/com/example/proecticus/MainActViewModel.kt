@@ -31,4 +31,12 @@ class MainActViewModel(application: Application) : AndroidViewModel(application)
     fun insert(expense: Expense) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(expense)
     }
+
+    suspend fun getExpensesByDay(date : String): LiveData<List<Expense>>{
+        return repository.getExpensesByDay(date)
+    }
+
+    suspend fun getAllExpenses(): LiveData<List<Expense>>{
+        return  repository.getAllExpenses()
+    }
 }
