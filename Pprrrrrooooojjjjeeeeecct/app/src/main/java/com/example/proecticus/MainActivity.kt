@@ -1,8 +1,6 @@
 package com.example.proecticus
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -24,8 +22,6 @@ const val ALL_EXPENSES = "ALL_EXPENSES"
 
 class MainActivity : AppCompatActivity() {
 
-    private var sPref: SharedPreferences? = null
-
     private lateinit var mainActViewModel: MainActViewModel
 
     companion object {
@@ -41,9 +37,9 @@ class MainActivity : AppCompatActivity() {
         val adapter = ExpensesListAdapter(applicationContext)
         recycler_view.adapter = adapter
 
-        loadExpensesDataFromSharedPrefs()
-
         mainActViewModel = ViewModelProvider(this).get(MainActViewModel::class.java)
+
+        updateExpensesTexts(expensesData = mainActViewModel.loadExpensesDataFromSharedPrefs())
 
         mainActViewModel.allExpensesInDB.observe(this, Observer { exp ->
             exp?.let {
@@ -122,20 +118,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun generateTransactionID(): String = UUID.randomUUID().toString()
 
-    private fun saveExpensesDataToSharedPrefs() {
-        sPref = getPreferences(Context.MODE_PRIVATE)
-        val ed = sPref!!.edit()
-        ed.putString(ALL_MONEY, all_money_tv.text.toString())
-        ed.putString(ALL_EXPENSES, all_expenses_tv.text.toString())
-        ed.apply()
-    }
+    private fun updateExpensesTexts(expensesData: ExpensesTextHolder) {
 
-    private fun loadExpensesDataFromSharedPrefs() {
-        sPref = getPreferences(Context.MODE_PRIVATE)
-        val savedAllMoney = sPref!!.getString(ALL_MONEY, "0")
-        val savedAllExpenses = sPref!!.getString(ALL_EXPENSES, "0")
-        all_money_tv.text = savedAllMoney
-        all_expenses_tv.text = savedAllExpenses
+        all_expenses_tv.text = expensesData.allExpensesText
+        all_money_tv.text = expensesData.allMoneyText
     }
 
     private fun updateExpensesTexts(expenses: List<Expense>) {
@@ -158,7 +144,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        saveExpensesDataToSharedPrefs()
+
+        val expensesData = ExpensesTextHolder(
+
+            allExpensesText = all_expenses_tv.text.toString(),
+            allMoneyText = all_money_tv.text.toString()
+        )
+
+        mainActViewModel.saveExpensesDataToSharedPrefs(expensesData)
     }
 
     private fun startActivityIntent(btn: Button) {
@@ -169,3 +162,11 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, ADD_REQUEST_CODE)
     }
 }
+
+/** Через него сохраняются и подгружаются
+ * текстовые поля с помощью Shared Prefs
+ */
+data class ExpensesTextHolder(
+    val allExpensesText: String,
+    val allMoneyText: String
+)
