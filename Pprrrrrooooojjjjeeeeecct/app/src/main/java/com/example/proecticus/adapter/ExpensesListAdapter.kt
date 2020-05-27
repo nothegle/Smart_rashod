@@ -32,8 +32,8 @@ class ExpensesListAdapter internal constructor(
         holder.expensesItemView.text = "${current.expCategory} | ${current.sum} | ${current.date}"
     }
 
-    fun setExpenses(expens: List<Expense>) {
-        this.expenses = expens
+    fun setExpenses(expense: List<Expense>) {
+        this.expenses = expense
         notifyDataSetChanged()
     }
 

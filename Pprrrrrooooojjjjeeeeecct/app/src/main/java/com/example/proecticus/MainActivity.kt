@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_AMOUNT_EXTRA
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_CATEGORY_EXTRA
 import com.example.proecticus.adapter.ExpensesListAdapter
@@ -16,6 +17,8 @@ import com.example.proecticus.data.ExpenseCategory.TRANSPORT
 import com.example.proecticus.data.ExpensesTextHolder
 import com.example.proecticus.db.Expense
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
@@ -44,16 +47,18 @@ class MainActivity : AppCompatActivity() {
 
         updateTotalTexts(expensesData = mainViewModel.loadExpensesDataFromSharedPrefs())
 
-        mainViewModel.allExpensesInDB.observe(this, Observer { exp ->
+        //mainViewModel.allExpensesInDB.launch {
+            mainViewModel.allExpensesInDB.observe(this@MainActivity, Observer { exp ->
             exp?.let {
                 adapter.setExpenses(it)
                 updateExpensesTexts(it)
             }
-        })
+        }) //}
+
     }
 
-    private fun makeListOfExpensesByDay(): LiveData<List<Expense>> {
-        return mainViewModel.allExpensesInDB
+    suspend private fun makeListOfExpensesByDay(): LiveData<List<Expense>> {
+        return mainViewModel.getExpensesByDay(date_tv.text.toString())
     }
 
     fun expensesOnClickListener(v: View?) {//слушает нажатия на кнопки с расходами
@@ -106,9 +111,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun addProductsExpense(newExp: Int) = when (transport_expenses.text) {
+    private fun addProductsExpense(newExp: Int) = when (products_expenses.text) {
 
-        "0" -> transport_expenses.text = newExp.toString()
+        "0" -> products_expenses.text = newExp.toString()
 
         else -> {
             val prodExp = products_expenses.text.toString().toInt()
@@ -132,8 +137,8 @@ class MainActivity : AppCompatActivity() {
         //берем из бд все расходы за текущий день по категориям
         if (expenses.isEmpty().not()) {
 
-            val listOfProductsExp = expenses.filter { it.expCategory == PRODUCTS.description }
-            val listOfTransportExp = expenses.filter { it.expCategory == TRANSPORT.description }
+            val listOfProductsExp = expenses.filter { it.expCategory == PRODUCTS.description && it.date.toString() == date_tv.text.toString()}
+            val listOfTransportExp = expenses.filter { it.expCategory == TRANSPORT.description && it.date.toString() == date_tv.text.toString()}
 
             val sumOfProductsExp = listOfProductsExp.sumBy { it.sum }
             val sumOfTransportExp = listOfTransportExp.sumBy { it.sum }
