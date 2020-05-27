@@ -25,7 +25,7 @@
         android:id="@+id/add_expense_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="63dp"
+        android:layout_marginTop="56dp"
         android:onClick="onAddMoneyClick"
         android:text="Добавить"
         app:layout_constraintEnd_toEndOf="@+id/add_total_amount_et"
