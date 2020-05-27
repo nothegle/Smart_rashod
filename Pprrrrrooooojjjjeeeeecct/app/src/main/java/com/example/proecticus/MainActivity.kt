@@ -198,7 +198,8 @@ class MainActivity : AppCompatActivity() {
         date_tv.text = "$dayStr.$monthStr.$newYear"
 
         //обновление расходов у кнопок
-        mainViewModel.getExpensesByDay("$dayStr.$monthStr.$newYear").value?.let { updateExpensesTexts(it) }
+        var check = mainViewModel.allExpensesInDB
+        updateExpensesTexts(mainViewModel.allExpensesInDB.value!!)
 
     }
 }

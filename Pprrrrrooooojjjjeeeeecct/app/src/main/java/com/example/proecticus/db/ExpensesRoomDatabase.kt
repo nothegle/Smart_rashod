@@ -46,10 +46,7 @@ abstract class ExpensesRoomDatabase : RoomDatabase() {
         }
 
         suspend fun populateDatabase(expensesDao: ExpensesDao) {
-            val expense = Expense("0", "продукты", "26.05.20", 0)
-            val expense1 = Expense("1", "транспорт", "26.05.20", 0)
-            expensesDao.insert(expense)
-            expensesDao.insert(expense1)
+
         }
     }
 }

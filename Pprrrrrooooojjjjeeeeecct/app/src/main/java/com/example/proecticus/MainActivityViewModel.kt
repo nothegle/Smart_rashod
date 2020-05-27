@@ -14,14 +14,17 @@ import kotlinx.coroutines.launch
 
 const val EXPENSES_SHARED_PREFS = "EXPENSES_SHARED_PREFS"
 
-class MainActViewModel(private val app: Application) : AndroidViewModel(app) {
+class MainActViewModel(val app: Application) : AndroidViewModel(app) {
 
     private val repository: ExpensesRepository
 
     val allExpensesInDB: LiveData<List<Expense>>
 
     init {
-        val expensesDao = ExpensesRoomDatabase.getDatabase(context = app, scope = viewModelScope).expensesDao()
+        val expensesDao = ExpensesRoomDatabase.getDatabase(
+                context = app,
+                scope = viewModelScope)
+                .expensesDao()
         repository = ExpensesRepository(expensesDao)
         allExpensesInDB = repository.allExpensesInDB
     }
@@ -33,7 +36,7 @@ class MainActViewModel(private val app: Application) : AndroidViewModel(app) {
         repository.insert(expense)
     }
 
-    suspend fun getExpensesByDay(date: String): LiveData<List<Expense>> {
+    fun getExpensesByDay(date: String): LiveData<List<Expense>> {
         return repository.getExpensesByDay(date)
     }
 
