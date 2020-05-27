@@ -3,12 +3,12 @@ package com.example.proecticus
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -22,7 +22,9 @@ import com.example.proecticus.db.Expense
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.UUID
 
 const val TOTAL_AMOUNT = "TOTAL_AMOUNT"
 const val TOTAL_EXPENSES = "TOTAL_EXPENSES"
@@ -30,6 +32,14 @@ const val TOTAL_EXPENSES = "TOTAL_EXPENSES"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mainViewModel: MainActViewModel
+    private val dateFilter = MutableLiveData(getCurrentDate())
+    private val adapter by lazy { ExpensesListAdapter(applicationContext) }
+
+    /**
+     * нужен, чтобы можно было апдейтить текста из любого места,
+     * так как список транзакций всегда выгружен и хранится тут
+     */
+    private val expenses = mutableListOf<Expense>()
 
     companion object {
         const val ADD_REQUEST_CODE = 1
@@ -41,21 +51,30 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val adapter = ExpensesListAdapter(applicationContext)
         recycler_view.adapter = adapter
 
         mainViewModel = ViewModelProvider(this).get(MainActViewModel::class.java)
 
+        date_tv.text = dateFilter.value
         updateTotalTexts(expensesData = mainViewModel.loadExpensesDataFromSharedPrefs())
 
-        //mainViewModel.allExpensesInDB.launch {
         mainViewModel.allExpensesInDB.observe(this@MainActivity, Observer { exp ->
             exp?.let {
                 adapter.setExpenses(it)
-                updateExpensesTexts(it)
+
+                /**
+                 * при изменении значений в бд изменяется список, который хранится в этой активтии
+                 */
+                expenses.clear()
+                expenses.addAll(it)
+                updateExpensesTexts()
             }
         })
 
+        /**
+         * при изменении даты изменяется текстовое поле с датой
+         */
+        dateFilter.observe(this, Observer { date -> date_tv.text = date })
     }
 
     suspend private fun makeListOfExpensesByDay(): LiveData<List<Expense>> {
@@ -93,10 +112,10 @@ class MainActivity : AppCompatActivity() {
 
         //взаимодействие с бд
         val expense = Expense(
-                transactionId = generateTransactionID(),
-                expCategory = category.toString(),
-                date = date_tv.text.toString(),
-                sum = newExpenseAmount
+            transactionId = generateTransactionID(),
+            expCategory = category.toString(),
+            date = date_tv.text.toString(),
+            sum = newExpenseAmount
         )
         mainViewModel.insert(expense)
     }
@@ -131,21 +150,34 @@ class MainActivity : AppCompatActivity() {
         total_amount_tv.text = expensesData.allMoneyText
     }
 
-    private fun updateExpensesTexts(expenses: List<Expense>) {
-
-        date_tv.text = SimpleDateFormat("dd.MM.yy").format(Date(System.currentTimeMillis()))
+    private fun updateExpensesTexts() {
 
         //берем из бд все расходы за текущий день по категориям
         if (expenses.isEmpty().not()) {
 
-            val listOfProductsExp = expenses.filter { it.expCategory == PRODUCTS.description && it.date.toString() == date_tv.text.toString() }
-            val listOfTransportExp = expenses.filter { it.expCategory == TRANSPORT.description && it.date.toString() == date_tv.text.toString() }
+            val productExpenses = expenses.filter {
+                it.expCategory == PRODUCTS.description && it.date == dateFilter.value
+            }
+            val transportExpenses = expenses.filter {
+                it.expCategory == TRANSPORT.description && it.date == dateFilter.value
+            }
 
-            val sumOfProductsExp = listOfProductsExp.sumBy { it.sum }
-            val sumOfTransportExp = listOfTransportExp.sumBy { it.sum }
+            val sumOfProductsExp = productExpenses.sumBy { it.sum }
+            val sumOfTransportExp = transportExpenses.sumBy { it.sum }
 
             products_expenses.text = sumOfProductsExp.toString()//textView
             transport_expenses.text = sumOfTransportExp.toString()//textView
+
+            /**
+             * сейчас изменяются лишь products_expenses и transport_expenses
+             * если надо изменять какие-то еще поля - нужно их добавить в этот метод
+             */
+
+            /**
+             * если надо обновлять список по дате - делаешь тут
+             * но тогда надо учитывать, что отображается всегда по установленной дате
+             */
+//            adapter.setExpenses(expenses.filter { it.date == dateFilter.value })
         }
     }
 
@@ -154,8 +186,8 @@ class MainActivity : AppCompatActivity() {
 
         val expensesData = ExpensesTextHolder(
 
-                allExpensesText = total_expenses_tv.text.toString(),
-                allMoneyText = total_amount_tv.text.toString()
+            allExpensesText = total_expenses_tv.text.toString(),
+            allMoneyText = total_amount_tv.text.toString()
         )
 
         mainViewModel.saveExpensesDataToSharedPrefs(expensesData)
@@ -169,37 +201,43 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, ADD_REQUEST_CODE)
     }
 
+    fun changeDateClick(v: View) {
 
-    fun funDate(v: View) {
         val c = Calendar.getInstance()
-        var day = c.get(Calendar.DAY_OF_MONTH)
-        var month = c.get(Calendar.MONTH + 1)
-        var year = c.get(Calendar.YEAR)
-            var dpd = DatePickerDialog(this@MainActivity, android.R.style.Theme_DeviceDefault_Light_Dialog,
-                    DatePickerDialog.OnDateSetListener() { dp, year, month, day ->
-                        mainViewModel.viewModelScope.launch {
-                        makeNewDate(dp, year, month, day)
-                    }}, year, month, day)
-            dpd.show()
+        val day = c.get(Calendar.DAY_OF_MONTH)
+        val month = c.get(Calendar.MONTH + 1)
+        val year = c.get(Calendar.YEAR) - 1
+        val dpd = DatePickerDialog(
+            this@MainActivity,
+            android.R.style.Theme_DeviceDefault_Light_Dialog,
+            DatePickerDialog.OnDateSetListener { dp, dpYear, dpMonth, dpDay ->
+                mainViewModel.viewModelScope.launch {
+                    makeNewDate(dp, dpYear, dpMonth, dpDay)
+                }
+            },
+            year,
+            month,
+            day
+        )
+
+        dpd.show()
     }
 
-    suspend fun makeNewDate(dp : DatePicker, year: Int, month: Int, day: Int){
+    fun makeNewDate(dp: DatePicker, year: Int, month: Int, day: Int) {
 
         var monthStr = month.toString()
         var dayStr = day.toString()
         var newYear = year
         if (month < 10) {
-                monthStr = "0" + (month+1).toString()
-             }
-            if (day < 10) {
-             dayStr = "0" + day
-            }
+            monthStr = "0${(month + 1)}"
+        }
+        if (day < 10) {
+            dayStr = "0$day"
+        }
         newYear %= 100
-        date_tv.text = "$dayStr.$monthStr.$newYear"
-
-        //обновление расходов у кнопок
-        var check = mainViewModel.allExpensesInDB
-        updateExpensesTexts(mainViewModel.allExpensesInDB.value!!)
-
+        dateFilter.value = "$dayStr.$monthStr.$newYear"
+        updateExpensesTexts()
     }
+
+    private fun getCurrentDate() = SimpleDateFormat("dd.MM.yy").format(Date(System.currentTimeMillis()))
 }
