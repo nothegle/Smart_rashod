@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#5CCCCC"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -16,6 +16,21 @@
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#EEE"
+            android:padding="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/main_activity_table_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_activity_expenses_info_container"
+            tools:itemCount="3"
+            tools:listitem="@layout/recyclerview_item" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -97,6 +112,14 @@
                 android:layout_marginLeft="80sp"
                 android:text="0"
                 android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/presents_expenses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="70sp"
+                android:text="0"
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow
@@ -124,22 +147,36 @@
                 android:textColor="#FFFFFF"
                 android:textSize="18sp" />
 
+            <Button
+                android:id="@+id/presents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30sp"
+                android:background="@color/blueColor"
+                android:onClick="expensesOnClickListener"
+                android:text="подарки"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"/>
+
         </TableRow>
     </TableLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#EEE"
-        android:padding="10dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/main_activity_table_layout"
+    <Button
+        android:id="@+id/addMoneyBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
+        android:onClick="onAddMoneyBtnClick"
+        android:text="Добавьте ваши доходы"
+        android:textSize="18sp"
+        android:background="@color/blueColor"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/main_activity_table_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_activity_expenses_info_container"
-        tools:itemCount="3"
-        tools:listitem="@layout/recyclerview_item" />
+        app:layout_constraintVertical_bias="0.0" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

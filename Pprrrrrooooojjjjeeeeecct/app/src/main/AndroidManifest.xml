@@ -20,6 +20,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.example.proecticus.ActivityToAddMoney"
+            android:label="Добавьте ваши доходы"
+            android:theme="@style/Theme.AppCompat.Dialog">
+            <intent-filter>
+                <action android:name="android.intent.action.com.example.proecticus.ActivityToAddMoney" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

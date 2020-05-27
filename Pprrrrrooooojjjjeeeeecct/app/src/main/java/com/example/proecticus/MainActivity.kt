@@ -14,9 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_AMOUNT_EXTRA
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_CATEGORY_EXTRA
+import com.example.proecticus.ActivityToAddMoney.Companion.TOTAL_AMOUNT_EXTRA
 import com.example.proecticus.adapter.ExpensesListAdapter
 import com.example.proecticus.data.ExpenseCategory.PRODUCTS
 import com.example.proecticus.data.ExpenseCategory.TRANSPORT
+import com.example.proecticus.data.ExpenseCategory.PRESENTS
 import com.example.proecticus.data.ExpensesTextHolder
 import com.example.proecticus.db.Expense
 import kotlinx.android.synthetic.main.activity_main.*
@@ -43,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val ADD_REQUEST_CODE = 1
+        const val ADD_TOTAL_REQUEST_CODE = 2
         const val EXPENSE_CATEGORY_TEXT_EXTRA = "EXPENSE_CATEGORY_TEXT_EXTRA"
     }
 
@@ -86,38 +89,65 @@ class MainActivity : AppCompatActivity() {
         startActivityIntent(v)
     }
 
+    fun onAddMoneyBtnClick(v : View?){
+        if (v !is Button) return
+        var intent = Intent(this, ActivityToAddMoney::class.java)
+        startActivityForResult(intent, ADD_TOTAL_REQUEST_CODE)
+    }
+
     //Выполняется при закрытии активити с добалением расходов. Здесь данные должны отправляться в бд
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         data ?: return
 
-        val newExpenseAmount = data.getStringExtra(EXPENSE_AMOUNT_EXTRA)?.toInt() ?: 0
+        if(requestCode == ADD_REQUEST_CODE) {
+            val newExpenseAmount = data.getStringExtra(EXPENSE_AMOUNT_EXTRA)?.toInt() ?: 0
 
-        val currentTotalAmount = total_amount_tv.text.toString().toInt()
-        val currentTotalExpenses = total_expenses_tv.text.toString().toInt()
+            val currentTotalAmount = total_amount_tv.text.toString().toInt()
+            val currentTotalExpenses = total_expenses_tv.text.toString().toInt()
 
-        val newTotalAmount = currentTotalAmount - newExpenseAmount
-        val newTotalExpenses = currentTotalExpenses + newExpenseAmount
+            val newTotalAmount = currentTotalAmount - newExpenseAmount
+            val newTotalExpenses = currentTotalExpenses + newExpenseAmount
 
-        total_amount_tv.text = newTotalAmount.toString()
-        total_expenses_tv.text = newTotalExpenses.toString()
+            total_amount_tv.text = newTotalAmount.toString()
+            total_expenses_tv.text = newTotalExpenses.toString()
 
-        val category: String? = data.getStringExtra(EXPENSE_CATEGORY_EXTRA)
-        when (category) {
+            val category: String? = data.getStringExtra(EXPENSE_CATEGORY_EXTRA)
+            when (category) {
 
-            PRODUCTS.description -> addProductsExpense(newExpenseAmount)
-            TRANSPORT.description -> addTransportExpense(newExpenseAmount)
+                PRODUCTS.description -> addProductsExpense(newExpenseAmount)
+                TRANSPORT.description -> addTransportExpense(newExpenseAmount)
+                PRESENTS.description -> addPresentsExpenses(newExpenseAmount)
+            }
+
+            //взаимодействие с бд
+            val expense = Expense(
+                    transactionId = generateTransactionID(),
+                    expCategory = category.toString(),
+                    date = date_tv.text.toString(),
+                    sum = newExpenseAmount
+            )
+            mainViewModel.insert(expense)
         }
+        if (requestCode == ADD_TOTAL_REQUEST_CODE){// ДОБАВЛЕНИЕ ДЕНЕГ
+            val newMoneyAmount = data.getStringExtra(TOTAL_AMOUNT_EXTRA)?.toInt() ?: 0
 
-        //взаимодействие с бд
-        val expense = Expense(
-            transactionId = generateTransactionID(),
-            expCategory = category.toString(),
-            date = date_tv.text.toString(),
-            sum = newExpenseAmount
-        )
-        mainViewModel.insert(expense)
+            val currentTotalAmount = total_amount_tv.text.toString().toInt()
+
+            val newTotalAmount = currentTotalAmount + newMoneyAmount
+            total_amount_tv.text = newTotalAmount.toString()
+        }
+    }
+
+    private  fun addPresentsExpenses(newExp: Int) = when (presents_expenses.text){
+        "0" -> presents_expenses.text = newExp.toString()
+
+        else -> {
+            val presentsExp = presents_expenses.text.toString().toInt()
+            val newPresentsExp = presentsExp + newExp
+            presents_expenses.text = newPresentsExp.toString()
+        }
     }
 
     private fun addTransportExpense(newExp: Int) = when (transport_expenses.text) {
@@ -161,12 +191,17 @@ class MainActivity : AppCompatActivity() {
             val transportExpenses = expenses.filter {
                 it.expCategory == TRANSPORT.description && it.date == dateFilter.value
             }
+            val presentsExpenses = expenses.filter {
+                it.expCategory == PRESENTS.description && it.date == dateFilter.value
+            }
 
             val sumOfProductsExp = productExpenses.sumBy { it.sum }
             val sumOfTransportExp = transportExpenses.sumBy { it.sum }
+            val sumOfPresentsExp = presentsExpenses.sumBy { it.sum }
 
             products_expenses.text = sumOfProductsExp.toString()//textView
             transport_expenses.text = sumOfTransportExp.toString()//textView
+            presents_expenses.text = sumOfPresentsExp.toString()
 
             /**
              * сейчас изменяются лишь products_expenses и transport_expenses
@@ -240,4 +275,5 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getCurrentDate() = SimpleDateFormat("dd.MM.yy").format(Date(System.currentTimeMillis()))
+
 }
