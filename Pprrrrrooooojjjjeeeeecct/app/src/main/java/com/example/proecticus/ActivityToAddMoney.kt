@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.activity_to_add_money.*
+import androidx.appcompat.app.AppCompatActivity
 
-
-class ActivityToAddMoney : Activity() {
+class ActivityToAddMoney : AppCompatActivity() {
     companion object {
         const val TOTAL_AMOUNT_EXTRA = "total amount"
     }

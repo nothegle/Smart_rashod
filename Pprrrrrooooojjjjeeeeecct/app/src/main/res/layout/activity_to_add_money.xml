@@ -15,6 +15,7 @@
         android:textColor="@color/blueColor"
         android:hint="добавьте ваши доходы"
         android:inputType="numberDecimal"
+        android:textColorHint="@color/blueColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
