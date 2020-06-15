@@ -1,12 +1,17 @@
 package com.example.proecticus
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -15,10 +20,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_AMOUNT_EXTRA
 import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_CATEGORY_EXTRA
 import com.example.proecticus.ActivityToAddMoney.Companion.TOTAL_AMOUNT_EXTRA
+import com.example.proecticus.ActivityToLimitToExpense.Companion.ADD_LIMIT_EXTRA
 import com.example.proecticus.adapter.ExpensesListAdapter
 import com.example.proecticus.data.ExpenseCategory.PRODUCTS
 import com.example.proecticus.data.ExpenseCategory.TRANSPORT
 import com.example.proecticus.data.ExpenseCategory.PRESENTS
+import com.example.proecticus.data.ExpenseCategory.CAFE
+import com.example.proecticus.data.ExpenseCategory.HEALTH
+import com.example.proecticus.data.ExpenseCategory.RECREATION
 import com.example.proecticus.data.ExpensesTextHolder
 import com.example.proecticus.db.Expense
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,12 +36,14 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.UUID
+import kotlin.random.Random.Default.Companion
 
 const val TOTAL_AMOUNT = "TOTAL_AMOUNT"
 const val TOTAL_EXPENSES = "TOTAL_EXPENSES"
+const val TOTAL_LIMITS = "TOTAL_LIMITS"
+
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var mainViewModel: MainActViewModel
     private val dateFilter = MutableLiveData(getCurrentDate())
     private val adapter by lazy { ExpensesListAdapter(applicationContext) }
@@ -46,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val ADD_REQUEST_CODE = 1
         const val ADD_TOTAL_REQUEST_CODE = 2
+        const val ADD_LIMIT_REQUEST_CODE = 3
         const val EXPENSE_CATEGORY_TEXT_EXTRA = "EXPENSE_CATEGORY_TEXT_EXTRA"
     }
 
@@ -119,6 +131,9 @@ class MainActivity : AppCompatActivity() {
                 PRODUCTS.description -> addProductsExpense(newExpenseAmount)
                 TRANSPORT.description -> addTransportExpense(newExpenseAmount)
                 PRESENTS.description -> addPresentsExpenses(newExpenseAmount)
+                CAFE.description -> addCafeExpense(newExpenseAmount)
+                HEALTH.description -> addHeathExpense(newExpenseAmount)
+                RECREATION.description -> addRecreationExpense(newExpenseAmount)
             }
 
             //взаимодействие с бд
@@ -130,6 +145,9 @@ class MainActivity : AppCompatActivity() {
             )
             mainViewModel.insert(expense)
         }
+
+
+
         if (requestCode == ADD_TOTAL_REQUEST_CODE){// ДОБАВЛЕНИЕ ДЕНЕГ
             val newMoneyAmount = data.getStringExtra(TOTAL_AMOUNT_EXTRA)?.toInt() ?: 0
 
@@ -138,6 +156,14 @@ class MainActivity : AppCompatActivity() {
             val newTotalAmount = currentTotalAmount + newMoneyAmount
             total_amount_tv.text = newTotalAmount.toString()
         }
+
+        if (requestCode == ADD_LIMIT_REQUEST_CODE){
+            val newLimit = data.getStringExtra(ADD_LIMIT_EXTRA)?.toInt() ?: 0
+            limit_tv.text = newLimit.toString()
+        }
+
+        checkLimitToExpenses()
+
     }
 
     private  fun addPresentsExpenses(newExp: Int) = when (presents_expenses.text){
@@ -172,12 +198,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun addHeathExpense(newExp: Int) = when (health_expenses.text){
+        "0" -> health_expenses.text = newExp.toString()
+
+        else -> {
+            val healthExp = health_expenses.text.toString().toInt()
+            val newHealthExp = healthExp + newExp
+            health_expenses.text = newHealthExp.toString()
+        }
+    }
+
+    private fun addRecreationExpense(newExp: Int) = when (recreation_expenses.text){
+        "0" -> recreation_expenses.text = newExp.toString()
+
+        else -> {
+            val recreationExp = recreation_expenses.text.toString().toInt()
+            val newRecreationExp = recreationExp + newExp
+            recreation_expenses.text = newRecreationExp.toString()
+        }
+    }
+
+    private fun addCafeExpense(newExp: Int) = when (cafe_expenses.text){
+        "0" -> cafe_expenses.text = newExp.toString()
+
+        else -> {
+            val cafeExp = cafe_expenses.text.toString().toInt()
+            val newCafeExp = cafeExp + newExp
+            cafe_expenses.text = newCafeExp.toString()
+        }
+    }
+
     private fun generateTransactionID(): String = UUID.randomUUID().toString()
 
     private fun updateTotalTexts(expensesData: ExpensesTextHolder) {
-
         total_expenses_tv.text = expensesData.allExpensesText
         total_amount_tv.text = expensesData.allMoneyText
+        limit_tv.text = expensesData.limitText
     }
 
     private fun updateExpensesTexts() {
@@ -194,14 +250,29 @@ class MainActivity : AppCompatActivity() {
             val presentsExpenses = expenses.filter {
                 it.expCategory == PRESENTS.description && it.date == dateFilter.value
             }
-
+            val cafeExpenses = expenses.filter {
+                it.expCategory == CAFE.description && it.date == dateFilter.value
+            }
+            val healthExpenses = expenses.filter {
+                it.expCategory == HEALTH.description && it.date == dateFilter.value
+            }
+            val recreaionExpenses = expenses.filter {
+                it.expCategory == RECREATION.description && it.date == dateFilter.value
+            }
             val sumOfProductsExp = productExpenses.sumBy { it.sum }
             val sumOfTransportExp = transportExpenses.sumBy { it.sum }
             val sumOfPresentsExp = presentsExpenses.sumBy { it.sum }
+            val sumOfCafeExp = cafeExpenses.sumBy { it.sum }
+            val sumOfHealthExp = healthExpenses.sumBy { it.sum }
+            val sumOfRecreationExp = recreaionExpenses.sumBy { it.sum }
 
             products_expenses.text = sumOfProductsExp.toString()//textView
             transport_expenses.text = sumOfTransportExp.toString()//textView
             presents_expenses.text = sumOfPresentsExp.toString()
+            cafe_expenses.text = sumOfCafeExp.toString()
+            health_expenses.text = sumOfHealthExp.toString()
+            recreation_expenses.text = sumOfRecreationExp.toString()
+
 
             /**
              * сейчас изменяются лишь products_expenses и transport_expenses
@@ -222,7 +293,8 @@ class MainActivity : AppCompatActivity() {
         val expensesData = ExpensesTextHolder(
 
             allExpensesText = total_expenses_tv.text.toString(),
-            allMoneyText = total_amount_tv.text.toString()
+            allMoneyText = total_amount_tv.text.toString(),
+                limitText = limit_tv.text.toString()
         )
 
         mainViewModel.saveExpensesDataToSharedPrefs(expensesData)
@@ -274,6 +346,34 @@ class MainActivity : AppCompatActivity() {
         updateExpensesTexts()
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun getCurrentDate() = SimpleDateFormat("dd.MM.yy").format(Date(System.currentTimeMillis()))
 
+    fun addLimitToExpense(view: View){
+        val intent = Intent(this, ActivityToLimitToExpense::class.java)
+        startActivityForResult(intent, ADD_LIMIT_REQUEST_CODE)
+    }
+
+    private fun checkLimitToExpenses() {
+        if (expenses.isEmpty().not()) {
+            val expensesByDay = expenses.filter {
+                it.date == dateFilter.value
+            }
+            val sumExpByDay = expensesByDay.sumBy { it.sum }
+
+            if(sumExpByDay > limit_tv.text.toString().toInt()){
+                var builder = NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Внимание")
+                        .setContentText("Вы превысили свои расходы!")
+
+                var notificationManager = NotificationManagerCompat.from(this)
+                notificationManager.notify(5, builder.build())
+
+
+                var toast = Toast.makeText(this,"Вы превысили свои расходы!",Toast.LENGTH_LONG )
+                toast.show()
+            }
+        }
+    }
 }

@@ -31,4 +31,5 @@
         android:text="Добавить"
         app:layout_constraintEnd_toEndOf="@+id/add_total_amount_et"
         app:layout_constraintTop_toBottomOf="@+id/add_total_amount_et" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

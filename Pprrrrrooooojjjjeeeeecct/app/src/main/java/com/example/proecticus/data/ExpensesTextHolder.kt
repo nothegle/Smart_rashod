@@ -5,5 +5,6 @@ package com.example.proecticus.data
  */
 data class ExpensesTextHolder(
     val allExpensesText: String,
-    val allMoneyText: String
+    val allMoneyText: String,
+    val limitText : String
 )

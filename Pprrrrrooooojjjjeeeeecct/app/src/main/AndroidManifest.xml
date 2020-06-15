@@ -21,6 +21,17 @@
         </activity>
 
         <activity
+            android:name="com.example.proecticus.ActivityToLimitToExpense"
+            android:label="Добавьте лимит расходов"
+            android:theme="@style/Theme.AppCompat.Dialog">
+            <intent-filter>
+                <action android:name="android.intent.action.com.example.proecticus.ActivityToAddLimit" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name="com.example.proecticus.ActivityToAddMoney"
             android:label="Добавьте ваши доходы"
             android:theme="@style/Theme.AppCompat.Dialog">

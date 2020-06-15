@@ -49,8 +49,10 @@ class MainActViewModel(val app: Application) : AndroidViewModel(app) {
         val sPref = app.getSharedPreferences(EXPENSES_SHARED_PREFS, Context.MODE_PRIVATE)
         val savedAllMoney = sPref.getString(TOTAL_AMOUNT, "0") ?: "0"
         val savedAllExpenses = sPref.getString(TOTAL_EXPENSES, "0") ?: "0"
+        val savedLimit = sPref.getString(TOTAL_LIMITS, "0") ?: "0"
 
-        return ExpensesTextHolder(allMoneyText = savedAllMoney, allExpensesText = savedAllExpenses)
+
+        return ExpensesTextHolder(allMoneyText = savedAllMoney, allExpensesText = savedAllExpenses, limitText = savedLimit)
     }
 
     fun saveExpensesDataToSharedPrefs(expensesTexts: ExpensesTextHolder) {
@@ -59,6 +61,7 @@ class MainActViewModel(val app: Application) : AndroidViewModel(app) {
         val ed = sPref!!.edit()
         ed.putString(TOTAL_EXPENSES, expensesTexts.allExpensesText)
         ed.putString(TOTAL_AMOUNT, expensesTexts.allMoneyText)
+        ed.putString(TOTAL_LIMITS, expensesTexts.limitText)
         ed.apply()
     }
 }
