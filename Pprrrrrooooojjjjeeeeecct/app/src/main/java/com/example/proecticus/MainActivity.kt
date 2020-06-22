@@ -2,8 +2,9 @@ package com.example.proecticus
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.content.Context
 import android.content.Intent
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -22,25 +23,20 @@ import com.example.proecticus.ActivityToAddExpense.Companion.EXPENSE_CATEGORY_EX
 import com.example.proecticus.ActivityToAddMoney.Companion.TOTAL_AMOUNT_EXTRA
 import com.example.proecticus.ActivityToLimitToExpense.Companion.ADD_LIMIT_EXTRA
 import com.example.proecticus.adapter.ExpensesListAdapter
-import com.example.proecticus.data.ExpenseCategory.PRODUCTS
-import com.example.proecticus.data.ExpenseCategory.TRANSPORT
-import com.example.proecticus.data.ExpenseCategory.PRESENTS
-import com.example.proecticus.data.ExpenseCategory.CAFE
-import com.example.proecticus.data.ExpenseCategory.HEALTH
-import com.example.proecticus.data.ExpenseCategory.RECREATION
+import com.example.proecticus.data.ExpenseCategory.*
 import com.example.proecticus.data.ExpensesTextHolder
 import com.example.proecticus.db.Expense
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.UUID
-import kotlin.random.Random.Default.Companion
+import java.util.*
+
 
 const val TOTAL_AMOUNT = "TOTAL_AMOUNT"
 const val TOTAL_EXPENSES = "TOTAL_EXPENSES"
 const val TOTAL_LIMITS = "TOTAL_LIMITS"
+private val CHANNEL_ID = "Notification_chanel"
+private val NOTIFY_ID = 5
 
 
 class MainActivity : AppCompatActivity() {
@@ -354,6 +350,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, ADD_LIMIT_REQUEST_CODE)
     }
 
+
     private fun checkLimitToExpenses() {
         if (expenses.isEmpty().not()) {
             val expensesByDay = expenses.filter {
@@ -361,14 +358,27 @@ class MainActivity : AppCompatActivity() {
             }
             val sumExpByDay = expensesByDay.sumBy { it.sum }
 
+
+
             if(sumExpByDay > limit_tv.text.toString().toInt()){
-                var builder = NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+
+                val ringURI: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+                var builder = NotificationCompat.Builder(this, CHANNEL_ID)
                         .setContentTitle("Внимание")
                         .setContentText("Вы превысили свои расходы!")
+                        .setSmallIcon(R.mipmap.baseline)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setSound(ringURI)
+                        .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+                        .build()
+
+
+
 
                 var notificationManager = NotificationManagerCompat.from(this)
-                notificationManager.notify(5, builder.build())
+                notificationManager.notify(NOTIFY_ID, builder)
+
 
 
                 var toast = Toast.makeText(this,"Вы превысили свои расходы!",Toast.LENGTH_LONG )
