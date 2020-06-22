@@ -1,10 +1,7 @@
 package com.example.proecticus.db
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface ExpensesDao {
@@ -18,4 +15,6 @@ interface ExpensesDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(expense: Expense)
 
+    @Query("DELETE FROM EXPENSES_TABLE")
+    suspend fun clearData()
 }

@@ -13,4 +13,6 @@ class ExpensesRepository (private val expensesDao: ExpensesDao) {
     val allExpensesInDB: LiveData<List<Expense>> = expensesDao.getAllExpenses()
 
     suspend fun insert(expense: Expense)  = expensesDao.insert(expense)
+
+    suspend fun clearData() = expensesDao.clearData()
 }

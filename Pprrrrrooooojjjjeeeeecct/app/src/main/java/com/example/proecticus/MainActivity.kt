@@ -27,6 +27,7 @@ import com.example.proecticus.data.ExpenseCategory.*
 import com.example.proecticus.data.ExpensesTextHolder
 import com.example.proecticus.db.Expense
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -88,8 +89,17 @@ class MainActivity : AppCompatActivity() {
         dateFilter.observe(this, Observer { date -> date_tv.text = date })
     }
 
-    suspend private fun makeListOfExpensesByDay(): LiveData<List<Expense>> {
-        return mainViewModel.getExpensesByDay(date_tv.text.toString())
+    fun dropData(v: View?){
+        mainViewModel.viewModelScope.launch {
+            async {clearData()}.await()
+        }
+        expenses.clear()
+        total_amount_tv.text = "0"
+        total_expenses_tv.text = "0"
+    }
+
+    suspend fun clearData(){
+        mainViewModel.clearData()
     }
 
     fun expensesOnClickListener(v: View?) {//слушает нажатия на кнопки с расходами
@@ -252,7 +262,7 @@ class MainActivity : AppCompatActivity() {
             val healthExpenses = expenses.filter {
                 it.expCategory == HEALTH.description && it.date == dateFilter.value
             }
-            val recreaionExpenses = expenses.filter {
+            val recreationExpenses = expenses.filter {
                 it.expCategory == RECREATION.description && it.date == dateFilter.value
             }
             val sumOfProductsExp = productExpenses.sumBy { it.sum }
@@ -260,7 +270,7 @@ class MainActivity : AppCompatActivity() {
             val sumOfPresentsExp = presentsExpenses.sumBy { it.sum }
             val sumOfCafeExp = cafeExpenses.sumBy { it.sum }
             val sumOfHealthExp = healthExpenses.sumBy { it.sum }
-            val sumOfRecreationExp = recreaionExpenses.sumBy { it.sum }
+            val sumOfRecreationExp = recreationExpenses.sumBy { it.sum }
 
             products_expenses.text = sumOfProductsExp.toString()//textView
             transport_expenses.text = sumOfTransportExp.toString()//textView
@@ -364,7 +374,7 @@ class MainActivity : AppCompatActivity() {
 
                 val ringURI: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-                var builder = NotificationCompat.Builder(this, CHANNEL_ID)
+                var builder = NotificationCompat.Builder(this@MainActivity, CHANNEL_ID)
                         .setContentTitle("Внимание")
                         .setContentText("Вы превысили свои расходы!")
                         .setSmallIcon(R.mipmap.baseline)
@@ -376,7 +386,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                var notificationManager = NotificationManagerCompat.from(this)
+                var notificationManager = NotificationManagerCompat.from(this@MainActivity)
                 notificationManager.notify(NOTIFY_ID, builder)
 
 

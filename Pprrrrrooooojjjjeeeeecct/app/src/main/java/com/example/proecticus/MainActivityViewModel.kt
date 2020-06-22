@@ -20,6 +20,8 @@ class MainActViewModel(val app: Application) : AndroidViewModel(app) {
 
     val allExpensesInDB: LiveData<List<Expense>>
 
+
+
     init {
         val expensesDao = ExpensesRoomDatabase.getDatabase(
                 context = app,
@@ -32,6 +34,10 @@ class MainActViewModel(val app: Application) : AndroidViewModel(app) {
     /**
      *  Launching a new coroutine
      */
+    suspend fun clearData(){
+        repository.clearData()
+    }
+
     fun insert(expense: Expense) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(expense)
     }

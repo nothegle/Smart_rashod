@@ -37,5 +37,9 @@ class ExpensesListAdapter internal constructor(
         notifyDataSetChanged()
     }
 
+    //fun dropData(){
+    //    expenses
+    //}
+
     override fun getItemCount() = expenses.size
 }
