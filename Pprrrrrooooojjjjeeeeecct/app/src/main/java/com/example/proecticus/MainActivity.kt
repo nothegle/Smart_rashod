@@ -372,22 +372,23 @@ class MainActivity : AppCompatActivity() {
 
             if(sumExpByDay > limit_tv.text.toString().toInt()){
 
-                val ringURI: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                //val ringURI: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-                var builder = NotificationCompat.Builder(this@MainActivity, CHANNEL_ID)
-                        .setContentTitle("Внимание")
-                        .setContentText("Вы превысили свои расходы!")
-                        .setSmallIcon(R.mipmap.baseline)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setSound(ringURI)
-                        .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
-                        .build()
+                        // var builder = NotificationCompat.Builder(this@MainActivity, CHANNEL_ID)
+                        //.setDefaults(NotificationCompat.DEFAULT_ALL)
+                       // .setContentTitle("Внимание")
+                        //.setContentText("Вы превысили свои расходы!")
+                        //.setSmallIcon(R.mipmap.baseline)
+                        //.setPriority(NotificationCompat.PRIORITY_HIGH)
+                        //.setSound(ringURI)
+                        //.setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+                       // .build()
 
 
 
 
-                var notificationManager = NotificationManagerCompat.from(this@MainActivity)
-                notificationManager.notify(NOTIFY_ID, builder)
+               // var notificationManager = NotificationManagerCompat.from(this@MainActivity)
+               // notificationManager.notify(NOTIFY_ID, builder)
 
 
 
