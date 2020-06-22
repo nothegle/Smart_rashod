@@ -18,10 +18,19 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Предел расходов:"
+            android:textSize="24sp"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
             android:id="@+id/limit_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="10000"
+            android:textColor="#FFFFFF"
             android:textSize="24sp" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -261,7 +270,7 @@
         android:layout_marginTop="26dp"
         android:background="@color/blueColor"
         android:onClick="addLimitToExpense"
-        android:text="добавьте придел расходов"
+        android:text="добавьте предел расходов"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/main_activity_table_layout"
