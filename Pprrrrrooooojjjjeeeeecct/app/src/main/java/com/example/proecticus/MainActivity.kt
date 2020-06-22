@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity() {
             limit_tv.text = newLimit.toString()
         }
 
-        checkLimitToExpenses()
+                //checkLimitToExpenses()
 
     }
 
@@ -279,7 +279,7 @@ class MainActivity : AppCompatActivity() {
             health_expenses.text = sumOfHealthExp.toString()
             recreation_expenses.text = sumOfRecreationExp.toString()
 
-
+            checkLimitToExpenses()
             /**
              * сейчас изменяются лишь products_expenses и transport_expenses
              * если надо изменять какие-то еще поля - нужно их добавить в этот метод
